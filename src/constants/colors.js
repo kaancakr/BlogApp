@@ -19,12 +19,13 @@ const COLORS = {
     blue: '#5A81F7',
     bluish: '#F1F1F7',
     black: '#000000',
-    green: '#6DD0A3',
     tabBarColor: '#E2E7EA',
     tabBarYellow: '#FCE205',
     tabBarTextColor: '#4682B4',
     signUpButtonColor: '#ffc107',
     red: '#DC3535',
+    background: '#222831',
+    green: '#26b50b'
 };
 
 export default COLORS;

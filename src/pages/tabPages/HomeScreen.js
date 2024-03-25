@@ -1,78 +1,105 @@
 import {useState} from "react";
-import {StyleSheet, Text, TextInput, View, StatusBar, ScrollView, TouchableOpacity} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    StatusBar,
+    ScrollView,
+    TouchableOpacity,
+    FlatList,
+    Image, Platform
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import COLORS from "../../constants/colors";
+import PostCard from "../../components/PostCard";
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
 
-    const [inputHeight, setInputHeight] = useState(hp(10));
-    const [hideIcons, setHideIcons] = useState(false);
+    const navigation = useNavigation();
 
-    const handleContentSizeChange = (contentWidth, contentHeight) => {
-        const threshold = hp(3);
-        if (contentHeight > threshold) {
-            setHideIcons(true);
-            setInputHeight(hp(15));
-        } else {
-            setHideIcons(false);
-            setInputHeight(hp(6));
-        }
+    const verticalData = [
+        {id: "1", title: "+", color: COLORS.green},
+        {id: "2", title: "add", color: COLORS.blue},
+        {id: "3", title: "technology", color: COLORS.blue},
+        {id: "4", title: "trends", color: COLORS.blue},
+        {id: "5", title: "topics", color: COLORS.blue},
+    ];
+
+    const handleOpenProfilePage = () => {
+        navigation.navigate('Profile');
     };
+
+    const renderItem = ({item}) => (
+        <TouchableOpacity style={styles.bottomIcon}>
+            <Text style={{fontWeight: "bold", color: item.color, fontSize: 14}}>{item.title}</Text>
+        </TouchableOpacity>
+    );
+
     return (
         <View style={styles.container}>
             <StatusBar style="light-content"/>
-            <ScrollView style={styles.area}>
+            <View style={styles.area}>
                 <View style={styles.welcomeArea}>
                     <Text style={styles.welcomeText}>
-                        Welcome... Developer 👨‍💻
+                        Home
                     </Text>
-                    <Text style={styles.welcomeSubText}>
-                        Let's share your ideas with others
-                    </Text>
-                </View>
-                <View style={styles.enterText}>
-                    <View style={styles.mainText}>
-                        <Text style={styles.caption}>What did you produce today?</Text>
-                    </View>
-                    <View style={[styles.inputArea, {height: inputHeight}]}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Share some ideas..."
-                            placeholderTextColor={'#fff'}
-                            keyboardType="numeric"
-                            multiline={true}
-                            onContentSizeChange={(e) =>
-                                handleContentSizeChange(e.nativeEvent.contentSize.width, e.nativeEvent.contentSize.height)
-                            }
+                    <TouchableOpacity onPress={handleOpenProfilePage}>
+                        <Image
+                            source={require("../../assets/monkey.jpg")}
+                            style={styles.image}
                         />
-                        <TouchableOpacity>
-                            <Icon name={'send'} size={30} style={styles.inputIcon}/>
-                        </TouchableOpacity>
-                    </View>
-                    {!hideIcons && (
-                        <View style={styles.subText}>
-                            <Text style={styles.subCaption}>Or share your projects directly</Text>
-                        </View>
-                    )}
-                    {!hideIcons && (
-                        <View style={styles.iconActionArea}>
-                            <TouchableOpacity>
-                                <Icon name={'logo-github'} color={'#fff'} size={25} style={styles.bottomIcon}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Icon name={'logo-medium'} color={'#fff'} size={25} style={styles.bottomIcon}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Icon name={'logo-linkedin'} color={'#fff'} size={25} style={styles.bottomIcon}/>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-
+                    </TouchableOpacity>
                 </View>
-            </ScrollView>
+                <FlatList
+                    data={verticalData}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    horizontal
+                    contentContainerStyle={styles.flatListContainer}
+                />
+                <ScrollView>
+                    <View style={styles.postContainer}>
+                        <PostCard
+                            id={1}
+                            username="kaancakir"
+                            imageUrl="https://via.placeholder.com/250"
+                            likes={123}
+                            comments={7}
+                            caption="This is a sample caption for the Instagram post."
+                        />
+                        <PostCard
+                            id={2}
+                            username="berkaykaraca"
+                            imageUrl="https://via.placeholder.com/250"
+                            likes={123}
+                            comments={7}
+                            caption="This is a sample caption for the Instagram post."
+                        />
+                        <PostCard
+                            id={3}
+                            username="berkebeyaz"
+                            imageUrl="https://via.placeholder.com/250"
+                            likes={123}
+                            comments={7}
+                            caption="This is a sample caption for the Instagram post."
+                        />
+                        <PostCard
+                            id={4}
+                            username="kivi"
+                            imageUrl="https://via.placeholder.com/250"
+                            likes={123}
+                            comments={7}
+                            caption="This is a sample caption for the Instagram post."
+                        />
+                    </View>
+                </ScrollView>
+            </View>
         </View>
 
     );
@@ -86,90 +113,43 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     area: {
-        marginTop: hp(8)
+        marginTop: hp(8),
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     welcomeArea: {
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         width: wp(90),
-        height: hp(12),
-        backgroundColor: '#344955',
-        borderWidth: 2,
-        borderColor: '#50727B',
-        padding: 10,
-        borderRadius: 10,
-        marginBottom: 20
+        justifyContent: "space-between"
     },
     welcomeText: {
-        fontSize: 28,
-        color: '#9EC8B9',
+        fontSize: 42,
+        color: COLORS.blue,
         fontWeight: "bold",
-        marginBottom: 20,
-        marginTop: 5
-    },
-    welcomeSubText: {
-        fontSize: 18,
-        color: '#9EC8B9',
-        fontWeight: "500"
-    },
-    mainText: {
-        padding: 10,
-        alignItems: 'flex-start',
-    },
-    caption: {
-        fontSize: 22,
-        color: '#fff',
-    },
-    enterText: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: wp(90),
-        height: hp(25),
-        backgroundColor: '#344955',
-        borderWidth: 2,
-        borderColor: '#50727B',
-        padding: 10,
-        borderRadius: 10,
-    },
-    inputArea: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-    },
-    input: {
-        padding: 10,
-        fontSize: 18,
-        borderWidth: 2,
-        borderRadius: 8,
-        borderColor: '#fff',
-        margin: 5,
-        width: wp(65),
-        color: '#fff',
-        marginRight: 15
-    },
-    inputIcon: {
-        margin: 10,
-        color: '#fff',
-    },
-    subText: {
         marginTop: 5,
-        padding: 10,
-        alignItems: 'flex-start',
+        fontFamily: Platform.OS === "ios" ? "Avenir Next" : "normal"
     },
-    subCaption: {
-        fontSize: 14,
-        color: '#fff',
-        fontWeight: '500',
-    },
-    iconActionArea: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-        marginTop: 10,
+    image: {
+        width: 50,
+        height: 50,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        borderRadius: 50
     },
     bottomIcon: {
         borderWidth: 2,
         padding: 10,
-        borderRadius: 8,
+        borderRadius: 10,
+        marginTop: 10,
         borderColor: '#fff',
+        justifyContent: "space-between",
+        marginHorizontal: 5,
+        backgroundColor: COLORS.white
+    },
+    flatListContainer: {
+        marginTop: 10,
+        height: hp(6),
+        marginBottom: 20
     },
 });

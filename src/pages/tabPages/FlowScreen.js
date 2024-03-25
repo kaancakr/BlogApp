@@ -1,16 +1,13 @@
-// ProfileScreen.js
+// SettingsScreen.js
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
-export default function ProfileScreen() {
-    const navigation = useNavigation();
-
+export default function FlowScreen() {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Profile Screen</Text>
-            <Text style={styles.content}>This is your profile information.</Text>
+            <Text style={styles.title}>Flow Screen</Text>
+            <Text style={styles.content}>This is where you can reach app flow.</Text>
         </View>
     );
 }
