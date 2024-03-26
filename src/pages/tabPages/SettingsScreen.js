@@ -7,54 +7,42 @@ import {
     Text,
     TouchableOpacity,
     Switch,
-    Image,
+    Image, Platform,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import {widthPercentageToDP as wp} from "react-native-responsive-screen";
+import COLORS from "../../constants/colors";
+import {useNavigation} from "@react-navigation/native";
 
 export default function SettingsScreen() {
+    const navigation = useNavigation();
+
     const [form, setForm] = useState({
         darkMode: false,
         emailNotifications: true,
         pushNotifications: false,
     });
 
+    const handleOpenProfilePage = () => {
+        navigation.navigate('Profile');
+    };
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#222831' }}>
             <View style={styles.container}>
-                <View style={styles.profile}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            // handle onPress
-                        }}>
-                        <View style={styles.profileAvatarWrapper}>
-                            <Image
-                                alt=""
-                                source={require("../../assets/monkey.jpg")}
-                                style={styles.profileAvatar} />
-
-                            <TouchableOpacity
-                                onPress={() => {
-                                    // handle onPress
-                                }}>
-                                <View style={styles.profileAction}>
-                                    <FeatherIcon
-                                        color="#fff"
-                                        name="edit-3"
-                                        size={15} />
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </TouchableOpacity>
-
-                    <View>
-                        <Text style={styles.profileName}>Kaan Çakır</Text>
-
-                        <Text style={styles.profileAddress}>
-                            123 Maple Street. Anytown, PA 17101
+                <View style={styles.settingsText}>
+                    <View style={styles.welcomeArea}>
+                        <Text style={styles.welcomeText}>
+                            Settings
                         </Text>
+                        <TouchableOpacity onPress={handleOpenProfilePage}>
+                            <Image
+                                source={require("../../assets/monkey.jpg")}
+                                style={styles.image}
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
-
                 <ScrollView>
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Preferences</Text>
@@ -223,47 +211,33 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         flexBasis: 0,
     },
-    profile: {
-        padding: 24,
-        backgroundColor: '#222831',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+    welcomeArea: {
+        display: 'flex',
+        flexDirection: 'row',
+        width: wp(90),
+        justifyContent: "space-between"
     },
-    profileAvatarWrapper: {
-        position: 'relative',
+    image: {
+        width: 50,
+        height: 50,
+        justifyContent: "flex-end",
+        alignItems: "center",
+        borderRadius: 50,
+        marginRight: wp(0.5)
     },
-    profileAvatar: {
-        width: 72,
-        height: 72,
-        borderRadius: 9999,
+    settingsText: {
+        paddingHorizontal: wp(5.5),
+        paddingVertical: 10,
     },
-    profileAction: {
-        position: 'absolute',
-        right: -4,
-        bottom: -10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 28,
-        height: 28,
-        borderRadius: 9999,
-        backgroundColor: '#007bff',
-    },
-    profileName: {
-        marginTop: 20,
-        fontSize: 19,
-        fontWeight: '600',
-        color: '#414d63',
-        textAlign: 'center',
-    },
-    profileAddress: {
+    welcomeText: {
+        fontSize: 42,
+        color: COLORS.blue,
+        fontWeight: "bold",
         marginTop: 5,
-        fontSize: 16,
-        color: '#989898',
-        textAlign: 'center',
+        fontFamily: Platform.OS === "ios" ? "Avenir Next" : "normal"
     },
     section: {
-        paddingHorizontal: 24,
+        paddingHorizontal: 15,
     },
     sectionTitle: {
         paddingVertical: 12,
