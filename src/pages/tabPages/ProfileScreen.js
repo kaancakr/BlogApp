@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     StyleSheet,
     SafeAreaView,
@@ -8,18 +8,47 @@ import {
     TouchableOpacity,
     Switch,
     Image,
+    Platform
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { createStackNavigator } from "@react-navigation/stack";
+import Icon from "react-native-vector-icons/Ionicons";
+import COLORS from "../../constants/colors";
+import { firebase } from "../../../firebase";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import SettingsScreen from "./SettingsScreen";
+import {useNavigation} from "@react-navigation/native";
+import LoginScreen from "../authPages/LoginScreen";
 
-export default function ProfileScreen() {
+const ProfileScreen= () => {
+    const navigation = useNavigation();
+
     const [form, setForm] = useState({
         darkMode: false,
         emailNotifications: true,
         pushNotifications: false,
     });
 
+    const signOut = async () => {
+        try {
+            await firebase.auth().signOut();
+            // Additional actions after successful logout can be added here
+            navigation.navigate("Login");
+        } catch (error) {
+            console.error("Error signing out:", error.message);
+            // Handle sign-out error, if any
+        }
+    };
+
+    const handleOpenSettingsScreen = () => {
+        navigation.navigate('Settings');
+    };
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#222831' }}>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#222831'}}>
             <View style={styles.container}>
                 <View style={styles.profile}>
                     <TouchableOpacity
@@ -30,7 +59,7 @@ export default function ProfileScreen() {
                             <Image
                                 alt=""
                                 source={require("../../assets/monkey.jpg")}
-                                style={styles.profileAvatar} />
+                                style={styles.profileAvatar}/>
 
                             <TouchableOpacity
                                 onPress={() => {
@@ -40,7 +69,7 @@ export default function ProfileScreen() {
                                     <FeatherIcon
                                         color="#fff"
                                         name="edit-3"
-                                        size={15} />
+                                        size={15}/>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -64,32 +93,32 @@ export default function ProfileScreen() {
                                 // handle onPress
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
-                                <FeatherIcon color="#fff" name="globe" size={20} />
+                            <View style={[styles.rowIcon, {backgroundColor: '#fe9400'}]}>
+                                <FeatherIcon color="#fff" name="globe" size={20}/>
                             </View>
 
                             <Text style={styles.rowLabel}>Language</Text>
 
-                            <View style={styles.rowSpacer} />
+                            <View style={styles.rowSpacer}/>
 
                             <FeatherIcon
                                 color="#C6C6C6"
                                 name="chevron-right"
-                                size={20} />
+                                size={20}/>
                         </TouchableOpacity>
 
                         <View style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                                <FeatherIcon color="#fff" name="moon" size={20} />
+                            <View style={[styles.rowIcon, {backgroundColor: '#007afe'}]}>
+                                <FeatherIcon color="#fff" name="moon" size={20}/>
                             </View>
 
                             <Text style={styles.rowLabel}>Dark Mode</Text>
 
-                            <View style={styles.rowSpacer} />
+                            <View style={styles.rowSpacer}/>
 
                             <Switch
-                                onValueChange={darkMode => setForm({ ...form, darkMode })}
-                                value={form.darkMode} />
+                                onValueChange={darkMode => setForm({...form, darkMode})}
+                                value={form.darkMode}/>
                         </View>
 
                         <TouchableOpacity
@@ -97,79 +126,119 @@ export default function ProfileScreen() {
                                 // handle onPress
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
+                            <View style={[styles.rowIcon, {backgroundColor: '#32c759'}]}>
                                 <FeatherIcon
                                     color="#fff"
                                     name="navigation"
-                                    size={20} />
+                                    size={20}/>
                             </View>
 
                             <Text style={styles.rowLabel}>Location</Text>
 
-                            <View style={styles.rowSpacer} />
+                            <View style={styles.rowSpacer}/>
 
                             <FeatherIcon
                                 color="#C6C6C6"
                                 name="chevron-right"
-                                size={20} />
+                                size={20}/>
                         </TouchableOpacity>
 
                         <View style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
+                            <View style={[styles.rowIcon, {backgroundColor: '#38C959'}]}>
                                 <FeatherIcon
                                     color="#fff"
                                     name="at-sign"
-                                    size={20} />
+                                    size={20}/>
                             </View>
 
                             <Text style={styles.rowLabel}>Email Notifications</Text>
 
-                            <View style={styles.rowSpacer} />
+                            <View style={styles.rowSpacer}/>
 
                             <Switch
                                 onValueChange={emailNotifications =>
-                                    setForm({ ...form, emailNotifications })
+                                    setForm({...form, emailNotifications})
                                 }
-                                value={form.emailNotifications} />
+                                value={form.emailNotifications}/>
                         </View>
 
                         <View style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#38C959' }]}>
-                                <FeatherIcon color="#fff" name="bell" size={20} />
+                            <View style={[styles.rowIcon, {backgroundColor: '#38C959'}]}>
+                                <FeatherIcon color="#fff" name="bell" size={20}/>
                             </View>
 
                             <Text style={styles.rowLabel}>Push Notifications</Text>
 
-                            <View style={styles.rowSpacer} />
+                            <View style={styles.rowSpacer}/>
 
                             <Switch
                                 onValueChange={pushNotifications =>
-                                    setForm({ ...form, pushNotifications })
+                                    setForm({...form, pushNotifications})
                                 }
-                                value={form.pushNotifications} />
+                                value={form.pushNotifications}/>
                         </View>
+
+                        <TouchableOpacity
+                            onPress={handleOpenSettingsScreen}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, {backgroundColor: '#8e8d91'}]}>
+                                <FeatherIcon
+                                    color="#fff"
+                                    name="settings"
+                                    size={20}/>
+                            </View>
+
+                            <Text style={styles.rowLabel}>Settings</Text>
+
+                            <View style={styles.rowSpacer}/>
+
+                            <FeatherIcon
+                                color="#C6C6C6"
+                                name="chevron-right"
+                                size={20}/>
+                        </TouchableOpacity>
                     </View>
 
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Resources</Text>
 
                         <TouchableOpacity
+                            onPress={async () => {
+                                await signOut();
+                                // Additional actions after successful logout can be added here
+                            }}
+                            style={styles.row}>
+                            <View style={[styles.rowIcon, {backgroundColor: COLORS.red}]}>
+                                <FeatherIcon color="#fff" name="log-out" size={20}/>
+                            </View>
+
+                            <Text style={styles.rowLabel}>Log Out</Text>
+
+                            <View style={styles.rowSpacer}/>
+
+                            <FeatherIcon
+                                color="#C6C6C6"
+                                name="chevron-right"
+                                size={20}/>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
                             onPress={() => {
                                 // handle onPress
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#8e8d91' }]}>
-                                <FeatherIcon color="#fff" name="flag" size={20} />
+                            <View style={[styles.rowIcon, {backgroundColor: '#8e8d91'}]}>
+                                <FeatherIcon color="#fff" name="flag" size={20}/>
                             </View>
 
                             <Text style={styles.rowLabel}>Report Bug</Text>
 
-                            <View style={styles.rowSpacer} />
+                            <View style={styles.rowSpacer}/>
 
                             <FeatherIcon
                                 color="#C6C6C6"
                                 name="chevron-right"
-                                size={20} />
+                                size={20}/>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -177,18 +246,18 @@ export default function ProfileScreen() {
                                 // handle onPress
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#007afe' }]}>
-                                <FeatherIcon color="#fff" name="mail" size={20} />
+                            <View style={[styles.rowIcon, {backgroundColor: '#007afe'}]}>
+                                <FeatherIcon color="#fff" name="mail" size={20}/>
                             </View>
 
                             <Text style={styles.rowLabel}>Contact Us</Text>
 
-                            <View style={styles.rowSpacer} />
+                            <View style={styles.rowSpacer}/>
 
                             <FeatherIcon
                                 color="#C6C6C6"
                                 name="chevron-right"
-                                size={20} />
+                                size={20}/>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -196,23 +265,69 @@ export default function ProfileScreen() {
                                 // handle onPress
                             }}
                             style={styles.row}>
-                            <View style={[styles.rowIcon, { backgroundColor: '#32c759' }]}>
-                                <FeatherIcon color="#fff" name="star" size={20} />
+                            <View style={[styles.rowIcon, {backgroundColor: '#32c759'}]}>
+                                <FeatherIcon color="#fff" name="star" size={20}/>
                             </View>
 
                             <Text style={styles.rowLabel}>Rate in App Store</Text>
 
-                            <View style={styles.rowSpacer} />
+                            <View style={styles.rowSpacer}/>
 
                             <FeatherIcon
                                 color="#C6C6C6"
                                 name="chevron-right"
-                                size={20} />
+                                size={20}/>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
             </View>
         </SafeAreaView>
+    );
+};
+
+const ProfileStack = createStackNavigator();
+
+export default function ProfileStackScreen({ navigation }) {
+    return (
+        <ProfileStack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: COLORS.background,
+                },
+                headerTintColor: "#000",
+            }}
+        >
+            <ProfileStack.Screen
+                name={"ProfileScreen"}
+                component={ProfileScreen}
+                options={{
+                    tabBarLabel: "Profile",
+                    tabBarLabelStyle: {
+                        fontSize: wp(3),
+                    },
+                    tabBarColor: COLORS.blue,
+                    headerShown: false,
+
+                    tabBarActiveTintColor: COLORS.blue,
+                    tabBarInactiveTintColor: COLORS.grey,
+                }}
+            />
+            <ProfileStack.Screen
+                name={"Settings"}
+                component={SettingsScreen}
+                options={{
+                    tabBarLabel: "Settings",
+                    tabBarLabelStyle: {
+                        fontSize: wp(3),
+                    },
+                    tabBarColor: COLORS.blue,
+                    headerShown: false,
+
+                    tabBarActiveTintColor: COLORS.blue,
+                    tabBarInactiveTintColor: COLORS.grey,
+                }}
+            />
+        </ProfileStack.Navigator>
     );
 }
 

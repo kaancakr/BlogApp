@@ -15,12 +15,11 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 
 import HomeScreen from "../pages/tabPages/HomeScreen";
-import ProfileScreen from "../pages/tabPages/ProfileScreen";
-import SettingsScreen from "../pages/tabPages/SettingsScreen";
 import FlowScreen from "../pages/tabPages/FlowScreen";
-import SlidingButton from "../components/SlidingButton";
 import {useState} from "react";
 import {useNavigation} from "@react-navigation/native";
+import ProfileStackScreen from "../pages/tabPages/ProfileScreen";
+import NotificationScreen from "../pages/tabPages/NotificationScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,10 +27,6 @@ export default function MainTabScreen() {
     const navigation = useNavigation();
     const windowDimensions = useWindowDimensions();
     const [setInformationModalVisible] = useState(false);
-
-    const handleOpenInformationTab = () => {
-        setInformationModalVisible(true);
-    };
 
     return (
         <View style={styles.container}>
@@ -58,8 +53,8 @@ export default function MainTabScreen() {
                             iconName = focused
                                 ? "person-circle-outline"
                                 : "person-circle";
-                        } else if (route.name === "Settings") {
-                            iconName = focused ? "settings-outline" : "settings";
+                        } else if (route.name === "Notifications") {
+                            iconName = focused ? "notifications-outline" : "notifications";
                         }
 
                         return (
@@ -105,7 +100,7 @@ export default function MainTabScreen() {
                 ></Tab.Screen>
                 <Tab.Screen
                     name="Profile"
-                    component={ProfileScreen}
+                    component={ProfileStackScreen}
                     options={{
                         tabBarLabel: "Profile",
                         tabBarLabelStyle: {
@@ -119,10 +114,10 @@ export default function MainTabScreen() {
                     }}
                 ></Tab.Screen>
                 <Tab.Screen
-                    name="Settings"
-                    component={SettingsScreen}
+                    name="Notifications"
+                    component={NotificationScreen}
                     options={{
-                        tabBarLabel: "Settings",
+                        tabBarLabel: "Notifications",
                         tabBarLabelStyle: {
                             fontSize: wp(3),
                         },
@@ -134,16 +129,6 @@ export default function MainTabScreen() {
                     }}
                 ></Tab.Screen>
             </Tab.Navigator>
-
-            <View style={styles.slidingButtonContainer}>
-                <SlidingButton
-                    onPressProfile={() => setUserProfileOpen(true)}
-                    onPressInfo={handleOpenInformationTab}
-                    navigation={navigation}
-                    style={styles.slidingButtonContainer}
-                />
-            </View>
-
         </View>
     );
 };
@@ -162,10 +147,5 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#222831",
-    },
-    slidingButtonContainer: {
-        position: "absolute",
-        bottom: hp(5),
-        alignSelf: "center",
     },
 });

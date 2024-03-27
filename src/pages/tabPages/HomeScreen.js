@@ -1,4 +1,4 @@
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
     Text,
@@ -8,47 +8,96 @@ import {
     ScrollView,
     TouchableOpacity,
     FlatList,
-    Image, Platform
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+    Image,
+    Platform,
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import COLORS from "../../constants/colors";
 import PostCard from "../../components/PostCard";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
+import SlidingButton from "../../components/SlidingButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
-
     const navigation = useNavigation();
 
     const verticalData = [
-        {id: "1", title: "+", color: COLORS.green},
-        {id: "2", title: "add", color: COLORS.blue},
-        {id: "3", title: "technology", color: COLORS.blue},
-        {id: "4", title: "trends", color: COLORS.blue},
-        {id: "5", title: "topics", color: COLORS.blue},
+        { id: "1", title: "+", color: COLORS.green },
+        { id: "2", title: "add", color: COLORS.blue },
+        { id: "3", title: "technology", color: COLORS.blue },
+        { id: "4", title: "trends", color: COLORS.blue },
+        { id: "5", title: "topics", color: COLORS.blue },
     ];
 
-    const handleOpenProfilePage = () => {
-        navigation.navigate('Profile');
+    const [posts, setPosts] = useState([]);
+
+    useEffect(() => {
+        const loadPosts = async () => {
+            try {
+                const savedPosts = await AsyncStorage.getItem('posts');
+                if (savedPosts) {
+                    setPosts(JSON.parse(savedPosts));
+                }
+            } catch (error) {
+                console.error('Error loading posts:', error);
+            }
+        };
+        loadPosts();
+    }, []);
+
+    useEffect(() => {
+        const savePosts = async () => {
+            try {
+                await AsyncStorage.setItem('posts', JSON.stringify(posts));
+            } catch (error) {
+                console.error('Error saving posts:', error);
+            }
+        };
+        savePosts();
+    }, [posts]);
+
+    const handleNewPost = (input) => {
+        // Create a new post object
+        const newPost = {
+            id: posts.length + 1, // Generate a new ID
+            username: "newuser",
+            imageUrl: "https://via.placeholder.com/250",
+            likes: 0,
+            comments: 0,
+            caption: input,
+        };
+        // Update the state to include the new post
+        setPosts([...posts, newPost]);
     };
 
-    const renderItem = ({item}) => (
+    const handleOpenProfilePage = () => {
+        navigation.navigate("Profile");
+    };
+
+    const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.bottomIcon}>
-            <Text style={{fontWeight: "bold", color: item.color, fontSize: 14}}>{item.title}</Text>
+            <Text
+                style={{
+                    fontWeight: "bold",
+                    color: item.color,
+                    fontSize: 14,
+                }}
+            >
+                {item.title}
+            </Text>
         </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
-            <StatusBar style="light-content"/>
+            <StatusBar style="light-content" />
             <View style={styles.area}>
                 <View style={styles.welcomeArea}>
-                    <Text style={styles.welcomeText}>
-                        Home
-                    </Text>
+                    <Text style={styles.welcomeText}>Home</Text>
                     <TouchableOpacity onPress={handleOpenProfilePage}>
                         <Image
                             source={require("../../assets/monkey.jpg")}
@@ -65,91 +114,80 @@ export default function HomeScreen() {
                 />
                 <ScrollView>
                     <View style={styles.postContainer}>
-                        <PostCard
-                            id={1}
-                            username="kaancakir"
-                            imageUrl="https://via.placeholder.com/250"
-                            likes={123}
-                            comments={7}
-                            caption="This is a sample caption for the Instagram post."
-                        />
-                        <PostCard
-                            id={2}
-                            username="berkaykaraca"
-                            imageUrl="https://via.placeholder.com/250"
-                            likes={123}
-                            comments={7}
-                            caption="This is a sample caption for the Instagram post."
-                        />
-                        <PostCard
-                            id={3}
-                            username="berkebeyaz"
-                            imageUrl="https://via.placeholder.com/250"
-                            likes={123}
-                            comments={7}
-                            caption="This is a sample caption for the Instagram post."
-                        />
-                        <PostCard
-                            id={4}
-                            username="kivi"
-                            imageUrl="https://via.placeholder.com/250"
-                            likes={123}
-                            comments={7}
-                            caption="This is a sample caption for the Instagram post."
-                        />
+                        {posts.map((post) => (
+                            <PostCard
+                                key={post.id}
+                                id={post.id}
+                                username={post.username}
+                                imageUrl={post.imageUrl}
+                                likes={post.likes}
+                                comments={post.comments}
+                                caption={post.caption}
+                            />
+                        ))}
                     </View>
                 </ScrollView>
             </View>
+            <View style={styles.slidingButtonContainer}>
+                <SlidingButton onNewPost={handleNewPost} />
+            </View>
         </View>
-
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#222831',
-        alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: "#222831",
     },
     area: {
+        flex: 1,
         marginTop: hp(8),
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "center",
     },
     welcomeArea: {
-        display: 'flex',
-        flexDirection: 'row',
+        display: "flex",
+        flexDirection: "row",
         width: wp(90),
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     welcomeText: {
         fontSize: 42,
         color: COLORS.blue,
         fontWeight: "bold",
         marginTop: 5,
-        fontFamily: Platform.OS === "ios" ? "Avenir Next" : "normal"
+        fontFamily: Platform.OS === "ios" ? "Avenir Next" : "normal",
     },
     image: {
         width: 50,
         height: 50,
         justifyContent: "flex-end",
         alignItems: "center",
-        borderRadius: 50
+        borderRadius: 50,
     },
     bottomIcon: {
         borderWidth: 2,
         padding: 10,
         borderRadius: 10,
         marginTop: 10,
-        borderColor: '#fff',
+        borderColor: "#fff",
         justifyContent: "space-between",
         marginHorizontal: 5,
-        backgroundColor: COLORS.white
+        backgroundColor: COLORS.white,
     },
     flatListContainer: {
         marginTop: 10,
         height: hp(6),
-        marginBottom: 20
+        marginBottom: 20,
+    },
+    postContainer: {
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    slidingButtonContainer: {
+        position: "absolute",
+        bottom: hp(2), // Adjust this value as needed
+        right: wp(2), // Adjust this value as needed
     },
 });

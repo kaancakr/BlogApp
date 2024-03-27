@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     TouchableOpacity,
@@ -16,13 +16,13 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
-const SlidingButton = () => {
+const SlidingButton = ({ onNewPost }) => {
     const navigation = useNavigation();
     const [slideAnim] = useState(new Animated.Value(0));
     const [modalVisible, setModalVisible] = useState(false);
+    const [inputText, setInputText] = useState("");
     const [removeModalVisible, setRemoveModalVisible] = useState(false);
     const [selectedColor, setSelectedColor] = useState("#FF6347");
     const [selectedClass, setSelectedClass] = useState(null);
@@ -52,25 +52,46 @@ const SlidingButton = () => {
         }).start();
     }, []);
 
+    const handleTerminalPress = () => {
+        setModalVisible(true);
+    };
+
+    const handleTerminalClosePress = () => {
+        setModalVisible(false);
+    };
+
+    const handleSubmit = () => {
+        if (inputText.trim() !== "") {
+            // Call the onNewPost callback with the input text
+            onNewPost(inputText);
+            setInputText(""); // Clear the input field
+            setModalVisible(false); // Close the modal
+        }
+    };
+
     return (
         <View>
             {showAdditionalIcons && (
                 <>
                     <TouchableOpacity
                         onPress={() => setRemoveModalVisible(true)}
-                        style={{alignItems: "center"}}
+                        style={{ alignItems: "center" }}
                     >
                         <Animatable.View
                             animation="fadeInUp"
                             duration={500}
                             style={styles.icons}
                         >
-                            <Icon name="battery-half" size={hp(4)} color={COLORS.green}/>
+                            <Icon
+                                name="battery-half"
+                                size={hp(4)}
+                                color={COLORS.green}
+                            />
                         </Animatable.View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => setModalVisible(true)}
-                        style={{alignItems: "center"}}
+                        onPress={handleTerminalPress}
+                        style={{ alignItems: "center" }}
                     >
                         <View>
                             <Animatable.View
@@ -78,13 +99,24 @@ const SlidingButton = () => {
                                 duration={700}
                                 style={styles.icons}
                             >
-                                <Icon name="terminal" size={hp(4)} color={COLORS.background}/>
+                                <Icon
+                                    name="terminal"
+                                    size={hp(4)}
+                                    color={COLORS.background}
+                                />
                             </Animatable.View>
                         </View>
                     </TouchableOpacity>
                 </>
             )}
-            <TouchableOpacity onPress={handleToggleIcons}>
+            <TouchableOpacity
+                onPress={handleToggleIcons}
+                style={{
+                    borderRadius: 50,
+                    backgroundColor: COLORS.white,
+                    borderColor: COLORS.white,
+                }}
+            >
                 <Animated.View
                     style={{
                         transform: [
@@ -98,9 +130,65 @@ const SlidingButton = () => {
                         alignContent: "center",
                     }}
                 >
-                    <Icon name="add-circle" size={hp(9)} color={COLORS.blue}/>
+                    <Icon
+                        name="add-circle"
+                        size={hp(9)}
+                        color={COLORS.blue}
+                    />
                 </Animated.View>
             </TouchableOpacity>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.terminalHeader}>
+                            <Text style={styles.terminalHeaderText}>
+                                Terminal
+                            </Text>
+                            <TouchableOpacity
+                                onPress={handleTerminalClosePress}
+                            >
+                                <Icon
+                                    name="close"
+                                    size={hp(3)}
+                                    color={COLORS.green}
+                                    onPress={() => setModalVisible(false)}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.terminalBody}>
+                            <ScrollView>
+                                {/* Terminal output goes here */}
+                                <Text style={styles.terminalText}>
+                                    Welcome to the terminal!
+                                </Text>
+                            </ScrollView>
+                        </View>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.prompt}>$</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter command..."
+                                placeholderTextColor={COLORS.white}
+                                autoFocus
+                                value={inputText}
+                                onChangeText={setInputText}
+                                multiline={true}
+                            />
+                        </View>
+                        <TouchableOpacity
+                            style={styles.submitButton}
+                            onPress={handleSubmit}
+                        >
+                            <Text style={styles.submitButtonText}>Submit</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -126,12 +214,89 @@ const styles = StyleSheet.create({
         marginLeft: -wp(1),
     },
     input: {
-        width: wp(50),
-        height: hp(5),
-        borderWidth: 2,
-        marginBottom: 10,
-        padding: 10,
+        flex: 1,
+        color: '#fff',
+        fontFamily: 'Courier New',
+        fontSize: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#6f6',
+        paddingVertical: 5,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    },
+    modalContent: {
+        backgroundColor: COLORS.background,
         borderRadius: 10,
-        borderColor: COLORS.blue,
+        padding: 20,
+        width: '80%',
+        shadowColor: COLORS.background,
+        shadowOffset: {
+            width: 8,
+            height: hp(1),
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: wp(0.5),
+        elevation: 5,
+    },
+    terminalHeader: {
+        marginBottom: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    terminalHeaderText: {
+        color: '#6f6',
+        fontSize: 16,
+        fontWeight: 'bold',
+        fontFamily: 'Courier New',
+    },
+    terminalBody: {
+        maxHeight: 200, // Adjust the maximum height of the terminal body
+        marginBottom: 10,
+    },
+    terminalText: {
+        color: '#fff',
+        fontFamily: 'Courier New',
+        fontSize: 16,
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    prompt: {
+        color: '#6f6',
+        fontSize: 16,
+        marginRight: 5,
+    },
+    submitButton: {
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: COLORS.green,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: COLORS.green,
+        marginTop: 20,
+        shadowColor: COLORS.green,
+        shadowOffset: {
+            width: 5,
+            height: hp(0.5),
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: wp(0.5),
+        elevation: 5,
+    },
+    submitButtonText: {
+        color: '#fff',
+        fontFamily: 'Courier New',
+        fontSize: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#6f6',
+        paddingVertical: 5,
+        fontWeight: "bold"
     },
 });
