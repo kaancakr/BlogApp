@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
     Text,
@@ -21,8 +21,9 @@ import PostCard from "../../components/PostCard";
 import { useNavigation } from "@react-navigation/native";
 import SlidingButton from "../../components/SlidingButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createStackNavigator } from "@react-navigation/stack";
 
-export default function HomeScreen() {
+const HomeScreen = () => {
     const navigation = useNavigation();
 
     const verticalData = [
@@ -74,8 +75,8 @@ export default function HomeScreen() {
         setPosts([...posts, newPost]);
     };
 
-    const handleOpenProfilePage = () => {
-        navigation.navigate("Profile");
+    const handleOpenDrawer = () => {
+        navigation.openDrawer();
     };
 
     const renderItem = ({ item }) => (
@@ -98,7 +99,7 @@ export default function HomeScreen() {
             <View style={styles.area}>
                 <View style={styles.welcomeArea}>
                     <Text style={styles.welcomeText}>Home</Text>
-                    <TouchableOpacity onPress={handleOpenProfilePage}>
+                    <TouchableOpacity onPress={handleOpenDrawer}>
                         <Image
                             source={require("../../assets/monkey.jpg")}
                             style={styles.image}
@@ -132,6 +133,51 @@ export default function HomeScreen() {
                 <SlidingButton onNewPost={handleNewPost} />
             </View>
         </View>
+    );
+};
+
+const HomeStack = createStackNavigator();
+
+export default function HomeStackScreen({ navigation }) {
+    return (
+        <HomeStack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: COLORS.white,
+                    height: hp(15),
+                },
+                headerTintColor: "#000",
+                headerTitleStyle: {
+                    fontWeight: "bold",
+                    color: "#E2E7EA",
+                },
+            }}
+        >
+            <HomeStack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    tabBarLabel: "Home",
+                    tabBarLabelStyle: {
+                        fontSize: wp(3),
+                    },
+                    headerShown: false,
+                    headerLeft: () => (
+                        <TouchableOpacity
+                            style={{ marginLeft: wp(5), marginTop: hp(0.5) }}
+                            onPress={() => navigation.openDrawer()}
+                        >
+                            <Image
+                                source={require("../../assets/monkey.jpg")}
+                                style={{ width: 30, height: 30 }}
+                            />
+                        </TouchableOpacity>
+                    ),
+                    tabBarActiveTintColor: COLORS.abu_blue,
+                    tabBarInactiveTintColor: COLORS.abu_grey,
+                }}
+            />
+        </HomeStack.Navigator>
     );
 }
 

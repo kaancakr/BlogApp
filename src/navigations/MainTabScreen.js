@@ -6,7 +6,6 @@ import {
 } from "react-native";
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {TransitionPresets} from "@react-navigation/stack";
-import {Ionicons} from '@expo/vector-icons';
 import COLORS from "../constants/colors";
 import {
     widthPercentageToDP as wp,
@@ -20,6 +19,7 @@ import {useState} from "react";
 import {useNavigation} from "@react-navigation/native";
 import ProfileStackScreen from "../pages/tabPages/ProfileScreen";
 import NotificationScreen from "../pages/tabPages/NotificationScreen";
+import HomeStackScreen from "../pages/tabPages/HomeScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -45,7 +45,7 @@ export default function MainTabScreen() {
                     tabBarIcon: ({focused, color, size}) => {
                         let iconName;
 
-                        if (route.name === "Home") {
+                        if (route.name === "HomeScreen") {
                             iconName = focused ? "home-outline" : "home";
                         } else if (route.name === "Flow") {
                             iconName = focused ? "barcode-outline" : "barcode";
@@ -69,8 +69,8 @@ export default function MainTabScreen() {
                 })}
             >
                 <Tab.Screen
-                    name="Home"
-                    component={HomeScreen}
+                    name="HomeScreen"
+                    component={HomeStackScreen}
                     options={{
                         tabBarLabel: "Home",
                         tabBarLabelStyle: {

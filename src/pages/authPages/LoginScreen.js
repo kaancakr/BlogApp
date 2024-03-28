@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     Image,
     StyleSheet,
@@ -9,16 +9,18 @@ import {
     Animated,
     Easing,
 } from "react-native";
-import { Text } from "react-native-paper";
+import {Text} from "react-native-paper";
 import COLORS from "../../constants/colors";
-const { width } = Dimensions.get("screen");
-import { firebase } from "../../../firebase";
+
+const {width} = Dimensions.get("screen");
+import {firebase} from "../../../firebase";
 import InteractiveTextInput from "react-native-text-input-interactive";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Animatable from "react-native-animatable";
+import ProfileStackScreen from "../tabPages/ProfileScreen";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -28,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
     useEffect(() => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                navigation.navigate("Home");
+                navigation.navigate("HomeScreen");
             }
         });
         return () => {
@@ -65,7 +67,7 @@ const LoginScreen = ({ navigation }) => {
         try {
             await AsyncStorage.setItem(
                 "lastLoginInfo",
-                JSON.stringify({ username, password, rememberMe })
+                JSON.stringify({username, password, rememberMe})
             );
         } catch (error) {
             console.error("Error saving login information to AsyncStorage:", error);
@@ -81,7 +83,7 @@ const LoginScreen = ({ navigation }) => {
             } else {
                 await AsyncStorage.removeItem("lastLoginInfo");
             }
-            navigation.navigate("Home");
+            navigation.navigate("HomeScreen");
         } catch (error) {
             alert(error.message);
         }
@@ -99,7 +101,7 @@ const LoginScreen = ({ navigation }) => {
                     try {
                         const storedLoginInfo = await AsyncStorage.getItem("lastLoginInfo");
                         if (storedLoginInfo) {
-                            const { password: storedPassword } = JSON.parse(storedLoginInfo);
+                            const {password: storedPassword} = JSON.parse(storedLoginInfo);
                             setPassword(storedPassword);
                         }
                     } catch (error) {
@@ -144,18 +146,18 @@ const LoginScreen = ({ navigation }) => {
             }),
         };
 
-        return <Animated.View style={lineStyle} />;
+        return <Animated.View style={lineStyle}/>;
     };
 
     const renderHeader = () => (
-        <View style={{ marginTop: 24 }}>
+        <View style={{marginTop: 24}}>
             <Animatable.View animation="fadeInUp" duration={800}>
-                <Text style={{ color: "#2a41cb", fontWeight: "bold", fontSize: 32 }}>
+                <Text style={{color: "#2a41cb", fontWeight: "bold", fontSize: 32}}>
                     Welcome Back 👋
                 </Text>
             </Animatable.View>
             <Animatable.View animation="fadeInUp" duration={900}>
-                <Text style={{ color: "#8e9496", letterSpacing: 1, marginTop: 8 }}>
+                <Text style={{color: "#8e9496", letterSpacing: 1, marginTop: 8}}>
                     I am so happy to see you. You can continue to login for share your awesome ideas.
                 </Text>
             </Animatable.View>
@@ -192,19 +194,19 @@ const LoginScreen = ({ navigation }) => {
             >
                 {rememberMe && (
                     <Image
-                        source={require("../../assets/checkbox.png")}
-                        style={{ width: 25, height: 25 }}
+                        source={require("../../assets/checkbox.jpeg")}
+                        style={{width: 25, height: 25, borderRadius: 10}}
                     />
                 )}
             </TouchableOpacity>
-            <Text style={{ fontWeight: "600", color: "#000" }}>Remember Me</Text>
+            <Text style={{fontWeight: "600", color: "#fff"}}>Remember Me</Text>
         </Animatable.View>
     );
 
     const renderTextInputs = () => (
-        <Animatable.View animation="fadeInUp" style={{ marginTop: 52 }}>
+        <Animatable.View animation="fadeInUp" style={{marginTop: 52}}>
             <InteractiveTextInput
-                textInputStyle={{ width: width * 0.88 }}
+                textInputStyle={{width: width * 0.88}}
                 label="Username"
                 mode="outlined"
                 placeholder={"UserName"}
@@ -252,12 +254,12 @@ const LoginScreen = ({ navigation }) => {
                 >
                     <Image
                         source={require("../../assets/fingerprint.png")}
-                        style={{ height: 25, width: 25, tintColor: "#2a41cb" }}
+                        style={{height: 25, width: 25, tintColor: "#2a41cb"}}
                     />
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={{ marginLeft: "auto", marginTop: 16 }}>
-                <Text style={{ color: "#2a41cb", fontWeight: "500" }}>
+            <TouchableOpacity style={{marginLeft: "auto", marginTop: 16}}>
+                <Text style={{color: "#2a41cb", fontWeight: "500"}}>
                     Forgot Password?
                 </Text>
             </TouchableOpacity>
@@ -285,7 +287,7 @@ const LoginScreen = ({ navigation }) => {
                 }}
                 onPress={() => loginUser(username, password)}
             >
-                <Text style={{ fontWeight: "bold", color: "#fff" }}>Login</Text>
+                <Text style={{fontWeight: "bold", color: "#fff"}}>Login</Text>
             </TouchableOpacity>
         </Animatable.View>
     );
@@ -310,7 +312,7 @@ const LoginScreen = ({ navigation }) => {
                 }}
                 onPress={() => navigation.navigate("OpenScreen")}
             >
-                <Text style={{ fontWeight: "bold", color: "#fff" }}>Go Back</Text>
+                <Text style={{fontWeight: "bold", color: "#fff"}}>Go Back</Text>
             </TouchableOpacity>
         </Animatable.View>
     );
@@ -319,15 +321,19 @@ const LoginScreen = ({ navigation }) => {
         <SafeAreaView
             style={{
                 flex: 1,
-                marginLeft: 24,
-                marginRight: 24,
+                backgroundColor: COLORS.background
             }}
         >
-            {renderHeader()}
-            {renderTextInputs()}
-            {renderRememberMeButton()}
-            {renderLoginButton()}
-            {renderGoBackButton()}
+            <View style={{
+                marginLeft: 24,
+                marginRight: 24,
+            }}>
+                {renderHeader()}
+                {renderTextInputs()}
+                {renderRememberMeButton()}
+                {renderLoginButton()}
+                {renderGoBackButton()}
+            </View>
         </SafeAreaView>
     );
 };

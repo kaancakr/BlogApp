@@ -14,14 +14,12 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { createStackNavigator } from "@react-navigation/stack";
 import Icon from "react-native-vector-icons/Ionicons";
 import COLORS from "../../constants/colors";
-import { firebase } from "../../../firebase";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import SettingsScreen from "./SettingsScreen";
 import {useNavigation} from "@react-navigation/native";
-import LoginScreen from "../authPages/LoginScreen";
 
 const ProfileScreen= () => {
     const navigation = useNavigation();
@@ -31,17 +29,6 @@ const ProfileScreen= () => {
         emailNotifications: true,
         pushNotifications: false,
     });
-
-    const signOut = async () => {
-        try {
-            await firebase.auth().signOut();
-            // Additional actions after successful logout can be added here
-            navigation.navigate("Login");
-        } catch (error) {
-            console.error("Error signing out:", error.message);
-            // Handle sign-out error, if any
-        }
-    };
 
     const handleOpenSettingsScreen = () => {
         navigation.navigate('Settings');
@@ -201,26 +188,6 @@ const ProfileScreen= () => {
 
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Resources</Text>
-
-                        <TouchableOpacity
-                            onPress={async () => {
-                                await signOut();
-                                // Additional actions after successful logout can be added here
-                            }}
-                            style={styles.row}>
-                            <View style={[styles.rowIcon, {backgroundColor: COLORS.red}]}>
-                                <FeatherIcon color="#fff" name="log-out" size={20}/>
-                            </View>
-
-                            <Text style={styles.rowLabel}>Log Out</Text>
-
-                            <View style={styles.rowSpacer}/>
-
-                            <FeatherIcon
-                                color="#C6C6C6"
-                                name="chevron-right"
-                                size={20}/>
-                        </TouchableOpacity>
 
                         <TouchableOpacity
                             onPress={() => {
