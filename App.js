@@ -11,7 +11,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "./src/pages/authPages/LoginScreen";
 import ProfileStackScreen from "./src/pages/tabPages/ProfileScreen";
 import HomeStackScreen from "./src/pages/tabPages/HomeScreen";
-
+import OpenScreen from "./src/pages/tabPages/OpenScreen";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -86,6 +86,16 @@ export default function App() {
                 <MyStack></MyStack>
             ) : (
                 <Stack.Navigator>
+                    <Stack.Screen
+                        name="OpenScreen"
+                        component={OpenScreen}
+                        options={{ headerShown: false }}
+                        listeners={({ navigation }) => ({
+                            focus: () => {
+                                StatusBar.setBarStyle("light-content");
+                            },
+                        })}
+                    />
                     <Stack.Screen
                         name="Login"
                         component={LoginScreen}

@@ -1,16 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {
-    Image,
-    StyleSheet,
-    View,
-    Dimensions,
-    TouchableOpacity,
-    SafeAreaView,
     Animated,
+    Dimensions,
     Easing,
-} from "react-native";
-import {Text} from "react-native-paper";
+    Image,
+    Platform,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import COLORS from "../../constants/colors";
+import {widthPercentageToDP as wp} from "react-native-responsive-screen";
 
 const {width} = Dimensions.get("screen");
 import {firebase} from "../../../firebase";
@@ -19,7 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Animatable from "react-native-animatable";
 
-const LoginScreen = ({navigation}) => {
+export default function OpenScreen({navigation}) {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [passwordVisible, setPasswordVisible] = React.useState(false);
@@ -151,8 +153,8 @@ const LoginScreen = ({navigation}) => {
     const renderHeader = () => (
         <View style={{marginTop: 24}}>
             <Animatable.View animation="fadeInUp" duration={800}>
-                <Text style={{color: "#2a41cb", fontWeight: "bold", fontSize: 32}}>
-                    Welcome Back 👋
+                <Text style={{color: COLORS.blue, fontWeight: "bold", fontSize: 46, fontFamily: 'Avenir Next'}}>
+                    DevApp
                 </Text>
             </Animatable.View>
             <Animatable.View animation="fadeInUp" duration={900}>
@@ -291,27 +293,18 @@ const LoginScreen = ({navigation}) => {
         </Animatable.View>
     );
     const renderGoBackButton = () => (
-        <Animatable.View animation="fadeInUp" duration={1000}>
+        <Animatable.View animation="fadeInUp" duration={1000} style={{flexDirection: "row", padding: 10, marginTop: 20}}>
+            <Text style={{
+                fontWeight: "500", color: "#fff", marginLeft: wp(10)
+            }}>
+                You don't have an account
+            </Text>
             <TouchableOpacity
                 style={{
-                    height: 50,
-                    width: width * 0.88,
-                    backgroundColor: "#636570",
-                    marginTop: 20,
-                    borderRadius: 12,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    shadowRadius: 8,
-                    shadowOpacity: 0.3,
-                    shadowColor: "#636570",
-                    shadowOffset: {
-                        width: 0,
-                        height: 5,
-                    },
+                    marginLeft: 10,
                 }}
-                onPress={() => navigation.navigate("OpenScreen")}
             >
-                <Text style={{fontWeight: "bold", color: "#fff"}}>Go Back</Text>
+                <Text style={{fontWeight: "bold", color: COLORS.blue}}>Register</Text>
             </TouchableOpacity>
         </Animatable.View>
     );
@@ -336,179 +329,25 @@ const LoginScreen = ({navigation}) => {
         </SafeAreaView>
     );
 };
-export default LoginScreen;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        padding: 10,
-        paddingTop: 10,
+        backgroundColor: COLORS.background, // Set background color to transparent so that image shows through
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    loginContent: {
+    welcomeArea: {
+        display: "flex",
+        flexDirection: "row",
+        width: wp(90),
         justifyContent: "center",
-        flex: 1,
-        backgroundColor: "#1d3b86",
     },
-    box: {
-        justifyContent: "center",
-        backgroundColor: "#fff",
-        borderRadius: 18,
-        elevation: 15,
-        paddingRight: 20,
-        paddingLeft: 20,
-        height: 450,
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-    },
-    title: {
-        fontSize: 40,
-        textAlign: "center",
-        color: COLORS.white,
-        marginBottom: 20,
+    welcomeText: {
+        fontSize: 42,
+        color: COLORS.blue,
         fontWeight: "bold",
-    },
-    header: {
-        justifyContent: "flex-start",
-        paddingBottom: 20,
-        alignItems: "center",
-    },
-    logo: {
-        alignItems: "center",
-        height: 100,
-        width: width,
-        marginTop: -40,
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22,
-    },
-    modalView: {
-        margin: 25,
-        backgroundColor: "#1e2024",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 1,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-    },
-    button: {
-        borderRadius: 50,
-        marginTop: 50,
-        padding: 15,
-        elevation: 3,
-        width: 100,
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
-        borderColor: COLORS.optimaGreen,
-        borderWidth: 1,
-    },
-    buttonOpen: {
-        backgroundColor: COLORS.optimaGreen,
-    },
-    buttonClose: {
-        backgroundColor: COLORS.optimaGreen,
-    },
-    textStyle: {
-        fontSize: 12,
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center",
-        color: "white",
-        fontSize: 13,
-    },
-    languageContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        position: "absolute",
-        bottom: 13,
-        right: 20,
-        padding: 5,
-    },
-    languageButton: {
-        backgroundColor: "#1d3b86",
-        padding: 10,
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: "#95877A",
-    },
-    languageButtonText: {
-        color: COLORS.white,
-        fontSize: 12,
-        fontWeight: "bold",
-    },
-    pickerContainer: {
-        position: "absolute",
-        bottom: 65,
-        right: 35,
-        zIndex: 2,
-        backgroundColor: "#fff",
-        shadowColor: "black",
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        borderRadius: 10,
-    },
-    languagePicker: {
-        width: 150,
-        backgroundColor: "white",
-        borderRadius: 10,
-        color: "white",
-    },
-    iconStyle: {
-        width: 50,
-        height: 50,
-    },
-    languageItem: {
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 8,
-        backgroundColor: "#fff", // Add background color to each language item
-        borderRadius: 5, // Add border radius to each language item
-        marginBottom: 5,
-    },
-    languageIcon: {
-        width: 30,
-        height: 30,
-        marginRight: 10,
-        borderRadius: 3, // Add border radius to the icon
-    },
-    languageLabel: {
-        fontSize: 16,
-        color: "#333", // Add text color to the language label
-    },
-    rememberMe: {
-        position: "absolute",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        bottom: 15,
-        left: 25,
-        zIndex: 1,
-        elevation: 5,
-        padding: 5,
-    },
-    rememberMeContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        position: "absolute",
-        bottom: 15,
-        left: 10,
-        padding: 5,
+        marginTop: 5,
+        fontFamily: Platform.OS === "ios" ? "Avenir Next" : "normal",
     },
 });
