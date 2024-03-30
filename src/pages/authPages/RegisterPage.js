@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import {Text} from "react-native-paper";
 import COLORS from "../../constants/colors";
-
 const {width} = Dimensions.get("screen");
 import {firebase} from "../../../firebase";
 import InteractiveTextInput from "react-native-text-input-interactive";
@@ -29,7 +28,7 @@ const LoginScreen = ({navigation}) => {
     useEffect(() => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                navigation.navigate("HomeScreen");
+                navigation.navigate("Login");
             }
         });
         return () => {
@@ -62,97 +61,24 @@ const LoginScreen = ({navigation}) => {
         setPasswordVisible((prevVisible) => !prevVisible);
     };
 
-    const saveLoginInfo = async () => {
-        try {
-            await AsyncStorage.setItem(
-                "lastLoginInfo",
-                JSON.stringify({username, password, rememberMe})
-            );
-        } catch (error) {
-            console.error("Error saving login information to AsyncStorage:", error);
-        }
-    };
-
-    const loginUser = async () => {
-        try {
-            await firebase.auth().signInWithEmailAndPassword(username, password);
-
-            if (rememberMe) {
-                saveLoginInfo();
-            } else {
-                await AsyncStorage.removeItem("lastLoginInfo");
-            }
-            navigation.navigate("HomeScreen");
-        } catch (error) {
-            alert(error.message);
-        }
-    };
-
-    const fingerprintAuthentication = async () => {
-        try {
-            const isAuthenticated = await LocalAuthentication.authenticateAsync({
-                promptMessage: "Authenticate with Fingerprint",
-                fallbackLabel: "Enter Password",
-            });
-
-            if (isAuthenticated.success) {
-                if (rememberMe) {
-                    try {
-                        const storedLoginInfo = await AsyncStorage.getItem("lastLoginInfo");
-                        if (storedLoginInfo) {
-                            const {password: storedPassword} = JSON.parse(storedLoginInfo);
-                            setPassword(storedPassword);
-                        }
-                    } catch (error) {
-                        console.error("Error loading stored login information:", error);
-                    }
-
-                    loginUser();
-                } else {
-                    console.log(
-                        "Remember Me is not checked. Handle this case accordingly."
-                    );
-                }
-            }
-        } catch (error) {
-            console.error("Fingerprint authentication error:", error);
-        }
-    };
-
-    const AnimatedBottomLine = () => {
-        const [lineWidth] = useState(new Animated.Value(0));
-
-        const animateLine = () => {
-            Animated.timing(lineWidth, {
-                toValue: 1,
-                duration: 300,
-                easing: Easing.ease,
-                useNativeDriver: false,
-            }).start();
-        };
-
-        useEffect(() => {
-            animateLine();
-        }, []);
-
-        const lineStyle = {
-            backgroundColor: "#2a41cb", // Set your desired line color
-            height: 2,
-            marginTop: 10,
-            width: lineWidth.interpolate({
-                inputRange: [0, 1],
-                outputRange: ["0%", "50%"],
-            }),
-        };
-
-        return <Animated.View style={lineStyle}/>;
-    };
+    const handleSignUp = () => {
+        firebase.auth().createUserWithEmailAndPassword(username, password)
+            .then(userCredentials => {
+                const user = userCredentials.user;
+            })
+            .catch(error => alert(error.message))
+    }
 
     const renderHeader = () => (
         <View style={{marginTop: 24}}>
             <Animatable.View animation="fadeInUp" duration={800}>
-                <Text style={{color: COLORS.blue, fontFamily: Platform.OS === "ios" ? "Avenir Next" : "normal", fontWeight: "bold", fontSize: 42}}>
-                    Welcome Back 👋
+                <Text style={{
+                    color: COLORS.blue,
+                    fontFamily: Platform.OS === "ios" ? "Avenir Next" : "normal",
+                    fontWeight: "bold",
+                    fontSize: 52
+                }}>
+                    Register
                 </Text>
             </Animatable.View>
             <Animatable.View animation="fadeInUp" duration={900}>
@@ -161,45 +87,6 @@ const LoginScreen = ({navigation}) => {
                 </Text>
             </Animatable.View>
         </View>
-    );
-
-    const renderRememberMeButton = () => (
-        <Animatable.View
-            animation="fadeInUp"
-            style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 20,
-                marginLeft: 2,
-                marginTop: -20,
-            }}
-        >
-            <TouchableOpacity
-                style={{
-                    height: 24,
-                    width: 24,
-                    borderRadius: 8,
-                    borderWidth: 2,
-                    borderColor: "#2a41cb",
-                    marginRight: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginLeft: 5,
-                }}
-                onPress={() => {
-                    setRememberMe(!rememberMe);
-                    saveLoginInfo();
-                }}
-            >
-                {rememberMe && (
-                    <Image
-                        source={require("../../assets/checkbox.jpeg")}
-                        style={{width: 25, height: 25, borderRadius: 10}}
-                    />
-                )}
-            </TouchableOpacity>
-            <Text style={{fontWeight: "600", color: "#fff"}}>Remember Me</Text>
-        </Animatable.View>
     );
 
     const renderTextInputs = () => (
@@ -228,7 +115,7 @@ const LoginScreen = ({navigation}) => {
                     secureTextEntry={!passwordVisible}
                     enableIcon
                     textInputStyle={{
-                        width: width * 0.7,
+                        width: width * 0.88,
                     }}
                     iconImageSource={
                         passwordVisible
@@ -239,33 +126,11 @@ const LoginScreen = ({navigation}) => {
                     onChangeText={(text) => setPassword(text)}
                     value={password}
                 />
-                <TouchableOpacity
-                    style={{
-                        height: 50,
-                        width: 50,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderColor: "#2a41cb",
-                        borderWidth: 1,
-                        borderRadius: 8,
-                    }}
-                    onPress={() => fingerprintAuthentication()}
-                >
-                    <Image
-                        source={require("../../assets/fingerprint.png")}
-                        style={{height: 25, width: 25, tintColor: "#2a41cb"}}
-                    />
-                </TouchableOpacity>
             </View>
-            <TouchableOpacity style={{marginLeft: "auto", marginTop: 16}}>
-                <Text style={{color: "#2a41cb", fontWeight: "500"}}>
-                    Forgot Password?
-                </Text>
-            </TouchableOpacity>
         </Animatable.View>
     );
 
-    const renderLoginButton = () => (
+    const renderRegisterButton = () => (
         <Animatable.View animation="fadeInUp" duration={900}>
             <TouchableOpacity
                 style={{
@@ -284,9 +149,9 @@ const LoginScreen = ({navigation}) => {
                         height: 5,
                     },
                 }}
-                onPress={() => loginUser(username, password)}
+                onPress={handleSignUp}
             >
-                <Text style={{fontWeight: "bold", color: "#fff"}}>Login</Text>
+                <Text style={{fontWeight: "bold", color: "#fff"}}>Register</Text>
             </TouchableOpacity>
         </Animatable.View>
     );
@@ -329,8 +194,7 @@ const LoginScreen = ({navigation}) => {
             }}>
                 {renderHeader()}
                 {renderTextInputs()}
-                {renderRememberMeButton()}
-                {renderLoginButton()}
+                {renderRegisterButton()}
                 {renderGoBackButton()}
             </View>
         </SafeAreaView>

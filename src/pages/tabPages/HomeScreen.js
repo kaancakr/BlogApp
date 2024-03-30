@@ -32,6 +32,7 @@ const HomeScreen = () => {
         { id: "3", title: "technology", color: COLORS.blue },
         { id: "4", title: "trends", color: COLORS.blue },
         { id: "5", title: "topics", color: COLORS.blue },
+        { id: "6", title: "for you", color: COLORS.blue },
     ];
 
     const [posts, setPosts] = useState([]);
@@ -173,8 +174,8 @@ export default function HomeStackScreen({ navigation }) {
                             />
                         </TouchableOpacity>
                     ),
-                    tabBarActiveTintColor: COLORS.abu_blue,
-                    tabBarInactiveTintColor: COLORS.abu_grey,
+                    tabBarActiveTintColor: COLORS.blue,
+                    tabBarInactiveTintColor: COLORS.grey,
                 }}
             />
         </HomeStack.Navigator>
@@ -226,6 +227,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         height: hp(6),
         marginBottom: 20,
+        width: wp(91.5)
     },
     postContainer: {
         alignItems: "center",

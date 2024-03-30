@@ -12,6 +12,8 @@ import LoginScreen from "./src/pages/authPages/LoginScreen";
 import ProfileStackScreen from "./src/pages/tabPages/ProfileScreen";
 import HomeStackScreen from "./src/pages/tabPages/HomeScreen";
 import OpenScreen from "./src/pages/tabPages/OpenScreen";
+import SplashScreen from "./src/pages/tabPages/SplashScreen";
+import RegisterPage from "./src/pages/authPages/RegisterPage";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -19,7 +21,7 @@ export default function App() {
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notifications, setNotifications] = useState([]);
     const [initializing, setInitializing] = useState(true);
-    const [user, setUser] = useState();
+    const [user, setUser] = useState(null);
     const [isBiometricSupported, setIsBiometricSupported] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -87,6 +89,16 @@ export default function App() {
             ) : (
                 <Stack.Navigator>
                     <Stack.Screen
+                        name="SplashScreen"
+                        component={SplashScreen}
+                        options={{ headerShown: false }}
+                        listeners={({ navigation }) => ({
+                            focus: () => {
+                                StatusBar.setBarStyle("light-content");
+                            },
+                        })}
+                    />
+                    <Stack.Screen
                         name="OpenScreen"
                         component={OpenScreen}
                         options={{ headerShown: false }}
@@ -99,6 +111,16 @@ export default function App() {
                     <Stack.Screen
                         name="Login"
                         component={LoginScreen}
+                        options={{ headerShown: false }}
+                        listeners={({ navigation }) => ({
+                            focus: () => {
+                                StatusBar.setBarStyle("light-content");
+                            },
+                        })}
+                    />
+                    <Stack.Screen
+                        name="RegisterPage"
+                        component={RegisterPage}
                         options={{ headerShown: false }}
                         listeners={({ navigation }) => ({
                             focus: () => {

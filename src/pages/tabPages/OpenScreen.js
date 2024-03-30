@@ -57,7 +57,7 @@ export default function OpenScreen({navigation}) {
                 console.error("Error loading stored login information:", error);
             }
         };
-        loadStoredUsername();
+        loadStoredUsername().catch(error => {alert("Error loading stored username")});
     }, []);
 
     const onIconPress = () => {
@@ -80,7 +80,7 @@ export default function OpenScreen({navigation}) {
             await firebase.auth().signInWithEmailAndPassword(username, password);
 
             if (rememberMe) {
-                saveLoginInfo();
+                await saveLoginInfo();
             } else {
                 await AsyncStorage.removeItem("lastLoginInfo");
             }
@@ -172,7 +172,7 @@ export default function OpenScreen({navigation}) {
                 flexDirection: "row",
                 alignItems: "center",
                 marginBottom: 20,
-                marginLeft: 2,
+                marginLeft: -4,
                 marginTop: -20,
             }}
         >
@@ -210,7 +210,7 @@ export default function OpenScreen({navigation}) {
                 textInputStyle={{width: width * 0.88}}
                 label="Username"
                 mode="outlined"
-                placeholder={"UserName"}
+                placeholder={"Username"}
                 autoCapitalize="none"
                 color={COLORS.black}
                 placeholderTextColor={COLORS.gray}
@@ -292,6 +292,10 @@ export default function OpenScreen({navigation}) {
             </TouchableOpacity>
         </Animatable.View>
     );
+
+    const handlePressRegister = () => {
+        navigation.navigate("RegisterPage");
+    }
     const renderGoBackButton = () => (
         <Animatable.View animation="fadeInUp" duration={1000} style={{flexDirection: "row", padding: 10, marginTop: 20}}>
             <Text style={{
@@ -303,6 +307,7 @@ export default function OpenScreen({navigation}) {
                 style={{
                     marginLeft: 10,
                 }}
+                onPress={() => handlePressRegister()}
             >
                 <Text style={{fontWeight: "bold", color: COLORS.blue}}>Register</Text>
             </TouchableOpacity>
