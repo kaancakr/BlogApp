@@ -245,7 +245,7 @@ const LoginScreen = ({navigation}) => {
                         width: 50,
                         alignItems: "center",
                         justifyContent: "center",
-                        borderColor: "#2a41cb",
+                        borderColor: COLORS.blue,
                         borderWidth: 1,
                         borderRadius: 8,
                     }}
@@ -253,12 +253,12 @@ const LoginScreen = ({navigation}) => {
                 >
                     <Image
                         source={require("../../assets/fingerprint.png")}
-                        style={{height: 25, width: 25, tintColor: "#2a41cb"}}
+                        style={{height: 25, width: 25, tintColor: COLORS.blue}}
                     />
                 </TouchableOpacity>
             </View>
             <TouchableOpacity style={{marginLeft: "auto", marginTop: 16}}>
-                <Text style={{color: "#2a41cb", fontWeight: "500"}}>
+                <Text style={{color: COLORS.blue, fontWeight: "500"}}>
                     Forgot Password?
                 </Text>
             </TouchableOpacity>
