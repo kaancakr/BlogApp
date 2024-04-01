@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import {Text} from "react-native-paper";
 import COLORS from "../../constants/colors";
+
 const {width} = Dimensions.get("screen");
 import {firebase} from "../../../firebase";
 import InteractiveTextInput from "react-native-text-input-interactive";

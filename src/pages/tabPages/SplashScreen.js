@@ -12,6 +12,7 @@ import {
 } from "react-native-responsive-screen";
 import COLORS from "../../constants/colors";
 import {ActivityIndicator} from 'react-native-paper';
+import * as Animatable from "react-native-animatable";
 
 const SplashScreen = ({navigation}) => {
     useEffect(() => {
@@ -27,14 +28,14 @@ const SplashScreen = ({navigation}) => {
             <View
                 style={styles.background}
             >
-                <View style={styles.content}>
+                <Animatable.View animation={"fadeIn"} style={styles.content}>
                     <Text style={styles.welcomeText}>
                         Welcome to DevApp
                     </Text>
                     <View style={styles.activityIndicator}>
                         <ActivityIndicator size={wp(20)} animating={true} color={COLORS.blue}/>
                     </View>
-                </View>
+                </Animatable.View>
             </View>
         </View>
     );

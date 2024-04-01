@@ -24,7 +24,7 @@ export default function SettingsScreen() {
     });
 
     const handleOpenProfilePage = () => {
-        navigation.navigate('Profile');
+        navigation.goBack();
     };
 
     return (
@@ -32,9 +32,17 @@ export default function SettingsScreen() {
             <View style={styles.container}>
                 <View style={styles.settingsText}>
                     <View style={styles.welcomeArea}>
-                        <Text style={styles.welcomeText}>
-                            Settings
-                        </Text>
+                        <View style={{flexDirection: "row"}}>
+                            <TouchableOpacity style={{justifyContent: "center", marginRight: 10}} onPress={handleOpenProfilePage}>
+                                <FeatherIcon
+                                    color={COLORS.blue}
+                                    name="arrow-left"
+                                    size={35} />
+                            </TouchableOpacity>
+                            <Text style={styles.welcomeText}>
+                                Settings
+                            </Text>
+                        </View>
                         <TouchableOpacity onPress={handleOpenProfilePage}>
                             <Image
                                 source={require("../../assets/monkey.jpg")}
