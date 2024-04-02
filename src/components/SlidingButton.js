@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        marginBottom: hp(20)
+        paddingBottom: hp(20)
     },
     modalContent: {
         backgroundColor: COLORS.background,

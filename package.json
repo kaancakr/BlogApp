@@ -116,7 +116,8 @@
     "redux-thunk": "^2.4.1",
     "ts-migrate": "^0.1.35",
     "universal-cookie": "^4.0.4",
-    "webpack-dev-server": "~3.11.0"
+    "webpack-dev-server": "~3.11.0",
+    "expo-build-properties": "~0.8.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

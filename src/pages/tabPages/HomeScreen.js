@@ -26,6 +26,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 const HomeScreen = () => {
     const navigation = useNavigation();
 
+    const handleDeletePost = (postId) => {
+        // Filter out the post with the given postId
+        const updatedPosts = posts.filter(post => post.id !== postId);
+        // Update the state to remove the deleted post
+        setPosts(updatedPosts);
+    };
+
     const verticalData = [
         { id: "1", title: "+", color: COLORS.green },
         { id: "2", title: "add", color: COLORS.blue },
@@ -125,6 +132,7 @@ const HomeScreen = () => {
                                 likes={post.likes}
                                 comments={post.comments}
                                 caption={post.caption}
+                                onDelete={handleDeletePost}
                             />
                         ))}
                     </View>
@@ -227,7 +235,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         height: hp(6),
         marginBottom: 20,
-        width: wp(91.5)
+        margin: 15
     },
     postContainer: {
         alignItems: "center",

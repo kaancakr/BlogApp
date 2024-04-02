@@ -13,13 +13,12 @@ import {
 } from 'react-native';
 import COLORS from "../../constants/colors";
 import {widthPercentageToDP as wp} from "react-native-responsive-screen";
-
-const {width} = Dimensions.get("screen");
 import {firebase} from "../../../firebase";
 import InteractiveTextInput from "react-native-text-input-interactive";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Animatable from "react-native-animatable";
+const {width} = Dimensions.get("screen");
 
 export default function OpenScreen({navigation}) {
     const [username, setUsername] = React.useState("");

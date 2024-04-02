@@ -11,13 +11,12 @@ import {
 } from "react-native";
 import {Text} from "react-native-paper";
 import COLORS from "../../constants/colors";
-
-const {width} = Dimensions.get("screen");
 import {firebase} from "../../../firebase";
 import InteractiveTextInput from "react-native-text-input-interactive";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Animatable from "react-native-animatable";
+const {width} = Dimensions.get("screen");
 
 const LoginScreen = ({navigation}) => {
     const [username, setUsername] = React.useState("");
