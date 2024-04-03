@@ -111,11 +111,6 @@ const SlidingButton = ({ onNewPost }) => {
             )}
             <TouchableOpacity
                 onPress={handleToggleIcons}
-                style={{
-                    borderRadius: 50,
-                    backgroundColor: COLORS.white,
-                    borderColor: COLORS.white,
-                }}
             >
                 <Animated.View
                     style={{

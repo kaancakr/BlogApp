@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     StyleSheet,
     SafeAreaView,
@@ -8,27 +8,38 @@ import {
     TouchableOpacity,
     Switch,
     Image,
-    Platform
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { createStackNavigator } from "@react-navigation/stack";
-import Icon from "react-native-vector-icons/Ionicons";
-import COLORS from "../../constants/colors";
+import { createStackNavigator } from "@react-navigation/stack";import COLORS from "../../constants/colors";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import SettingsScreen from "./SettingsScreen";
 import {useNavigation} from "@react-navigation/native";
+import {firebase} from "../../../firebase";
 
 const ProfileScreen= () => {
     const navigation = useNavigation();
+    const [name, setName] = useState('')
 
     const [form, setForm] = useState({
         darkMode: false,
         emailNotifications: true,
         pushNotifications: false,
     });
+
+    useEffect(() => {
+        firebase.firestore().collection('users')
+            .doc(firebase.auth().currentUser.uid).get()
+            .then((snapshot) => {
+                if (snapshot.exists) {
+                    setName(snapshot.data())
+                } else {
+                    console.log('User doesnt exist');
+                }
+            })
+    }, []);
 
     const handleOpenSettingsScreen = () => {
         navigation.navigate('Settings');
@@ -63,7 +74,7 @@ const ProfileScreen= () => {
                     </TouchableOpacity>
 
                     <View>
-                        <Text style={styles.profileName}>Kaan Çakır</Text>
+                        <Text style={styles.profileName}>{name.username}</Text>
 
                         <Text style={styles.profileAddress}>
                             123 Maple Street. Anytown, PA 17101

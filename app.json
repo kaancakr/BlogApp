@@ -6,28 +6,13 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "notification": {
-      "icon": "/Users/kaancakir/Desktop/Mobile Projects/SoftwareBlogApp/assets/appstore.png"
-    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "plugins": [
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "compileSdkVersion": 31,
-            "targetSdkVersion": 31,
-            "buildToolsVersion": "31.0.0"
-          },
-          "ios": {
-            "deploymentTarget": "16.0"
-          }
-        }
-      ]
+      "@react-native-google-signin/google-signin"
     ],
     "assetBundlePatterns": [
       "**/*"
@@ -41,16 +26,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ckrdevelopment.DevApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "owner": "ckrdevelopment",
     "extra": {
       "eas": {
         "projectId": "296f6887-d240-467e-845f-d94105274635"
       }
-    },
-    "owner": "ckrdevelopment"
+    }
   }
 }

@@ -22,9 +22,11 @@ import { useNavigation } from "@react-navigation/native";
 import SlidingButton from "../../components/SlidingButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createStackNavigator } from "@react-navigation/stack";
+import {firebase} from "../../../firebase";
 
 const HomeScreen = () => {
     const navigation = useNavigation();
+    const [name, setName] = useState('')
 
     const handleDeletePost = (postId) => {
         // Filter out the post with the given postId
@@ -69,11 +71,23 @@ const HomeScreen = () => {
         savePosts();
     }, [posts]);
 
+    useEffect(() => {
+        firebase.firestore().collection('users')
+            .doc(firebase.auth().currentUser.uid).get()
+            .then((snapshot) => {
+                if (snapshot.exists) {
+                    setName(snapshot.data())
+                } else {
+                    console.log('User doesnt exist');
+                }
+            })
+    }, []);
+
     const handleNewPost = (input) => {
         // Create a new post object
         const newPost = {
             id: posts.length + 1, // Generate a new ID
-            username: "newuser",
+            username: name.username,
             imageUrl: "https://via.placeholder.com/250",
             likes: 0,
             comments: 0,

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     View,
     Text,
@@ -23,13 +23,13 @@ import COLORS from "../constants/colors";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as Animatable from "react-native-animatable";
 
-const { height, width } = Dimensions.get("window");
+const {height, width} = Dimensions.get("window");
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }) => {
+const PostCard = ({id, username, imageUrl, likes, comments, caption, onDelete}) => {
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(1); // Initialize likeCount state
     const [modalVisible, setModalVisible] = useState(false);
@@ -38,8 +38,8 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
     const translateY = useRef(new Animated.Value(height)).current;
     const toggleModal = () => {
         setModalVisible(!modalVisible);
-        Animated.timing(translateX, {
-            toValue: modalVisible ? 0 : width,
+        Animated.timing(translateY, {
+            toValue: modalVisible ? height : 0,
             duration: 500,
             useNativeDriver: true,
         }).start();
@@ -54,7 +54,7 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
                 } else {
                     setShowDeleteButton(false);
                 }
-                Animated.event([null, { dx: translateX }], {
+                Animated.event([null, {dx: translateX}], {
                     useNativeDriver: false,
                 })(_, gestureState);
             },
@@ -131,14 +131,14 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
                         style: "destructive"
                     }
                 ],
-                { cancelable: false }
+                {cancelable: false}
             );
         } catch (error) {
             console.error('Error deleting post:', error);
         }
     };
 
-    const ModalItem = React.memo(({ title, index }) => (
+    const ModalItem = React.memo(({title, index}) => (
         <TouchableOpacity
             style={[
                 styles.item,
@@ -158,19 +158,46 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
         </TouchableOpacity>
     ));
 
-    const listData1 = [];
+    const listData1 = [
+        {
+            id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+            name: "Kaan",
+            title:
+                "🎉 Exciting News! 🚀 We are thrilled to announce a groundbreaking partnership that will redefine innovation in our community. Stay tuned for upcoming events, exclusive opportunities, and a wave of positive change. Together, we're shaping the future! 🌟 #InnovationUnleashed #StayTuned",
+        },
+        {
+            id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+            name: "Kaan",
+            title: "Second Item",
+        },
+        {
+            id: "58694a0f-3da1-471f-bd96-145571e29d72",
+            name: "Kaan",
+            title: "Third Item",
+        },
+        {
+            id: "1",
+            name: "Kaan",
+            title: "Third Item",
+        },
+        {
+            id: "5",
+            name: "Kaan",
+            title: "Third Item",
+        },
+    ];
 
     return (
         <Animated.View
             {...panResponder.panHandlers}
-            style={[styles.container, { transform: [{ translateX }] }]}
+            style={[styles.container, {transform: [{translateX}]}]}
         >
             <View style={styles.leftContainer}>
                 <View style={styles.header}>
                     <Text style={styles.username}>{username}</Text>
                     {showDeleteButton && (
                         <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-                            <Icon name="trash-outline" size={25} color={COLORS.red} />
+                            <Icon name="trash-outline" size={25} color={COLORS.red}/>
                         </TouchableOpacity>
                     )}
                 </View>
@@ -186,7 +213,7 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
                                 size={20}
                                 color={isLiked ? "red" : COLORS.blue}
                             />
-                            <Text style={[styles.likes, { color: isLiked ? "red" : COLORS.blue }]}>
+                            <Text style={[styles.likes, {color: isLiked ? "red" : COLORS.blue}]}>
                                 {likeCount} likes
                             </Text>
                         </TouchableOpacity>
@@ -194,14 +221,14 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
                             style={styles.commentButton}
                             onPress={toggleModal}
                         >
-                            <Icon name={"chatbox-ellipses-outline"} size={20} />
+                            <Icon name={"chatbox-ellipses-outline"} size={20}/>
                             <Text style={styles.comments}>{comments} comments</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
             <View style={styles.imageContainer}>
-                <Image source={{ uri: imageUrl }} style={styles.image} />
+                <Image source={{uri: imageUrl}} style={styles.image}/>
             </View>
             <Modal
                 animationType="slide"
@@ -212,7 +239,7 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
                 }}
             >
                 <Animatable.View
-                    style={[styles.modalContainer, { transform: [{ translateY }] }]}
+                    style={[styles.modalContainer, {transform: [{translateY}]}]}
                 >
                     <Text
                         style={{
@@ -228,13 +255,13 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
                         style={styles.closeButtonModal}
                         onPress={toggleModal}
                     >
-                        <Icon name="close-outline" size={wp(7)} color={COLORS.white} />
+                        <Icon name="close-outline" size={wp(7)} color={COLORS.white}/>
                     </TouchableOpacity>
                     <View>
                         <FlatList
                             data={listData1}
-                            renderItem={({ item, index }) => (
-                                <ModalItem title={item.title} index={index} />
+                            renderItem={({item, index}) => (
+                                <ModalItem title={item.title} index={index}/>
                             )}
                             keyExtractor={(item) => item.id}
                             style={styles.announcementBiggerListStyle}
@@ -247,7 +274,7 @@ const PostCard = ({ id, username, imageUrl, likes, comments, caption, onDelete }
                                 multiline={true}
                             />
                             <TouchableOpacity style={styles.iconContainer}>
-                                <Icon name={'git-branch'} size={35} style={styles.inputIcon} />
+                                <Icon name={'git-branch'} size={35} style={styles.inputIcon}/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -363,6 +390,73 @@ const styles = StyleSheet.create({
         maxWidth: wp(50),
         padding: 10,
         justifyContent: "center",
+    },
+    modalContainer: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: "#222831",
+        padding: 20,
+        height: height * 0.6,
+        borderTopStartRadius: 20,
+        borderTopEndRadius: 20,
+        borderWidth: 2,
+        borderBottomWidth: 0,
+        borderColor: COLORS.white,
+    },
+    closeButtonModal: {
+        alignSelf: "flex-end",
+        padding: wp(2),
+        marginTop: -hp(4),
+    },
+    iconTouchable: {
+        position: "absolute",
+        marginLeft: wp(45),
+    },
+    listIcon: {
+        marginLeft: "auto",
+        marginTop: hp(1),
+    },
+    announcementBiggerListStyle: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: hp(1),
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: wp(4),
+        elevation: 5,
+        backgroundColor: "transparent",
+        borderRadius: 20,
+    },
+    inputArea: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+    },
+    input: {
+        padding: 10,
+        fontSize: 18,
+        borderWidth: 2,
+        borderRadius: 12,
+        borderColor: '#fff',
+        width: wp(72.5),
+        color: '#fff',
+        marginRight: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "#222831",
+        height: hp(7)
+    },
+    iconContainer: {
+        backgroundColor: "#222831",
+        borderWidth: 2,
+        borderColor: "#fff",
+        borderRadius: 10,
+        padding: 10,
+    },
+    inputIcon: {
+        color: COLORS.green,
     },
 });
 

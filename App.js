@@ -9,13 +9,12 @@ import { DrawerContent } from "./src/components/drawer/DrawerContent";
 import * as LocalAuthentication from "expo-local-authentication";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "./src/pages/authPages/LoginScreen";
-import ProfileStackScreen from "./src/pages/tabPages/ProfileScreen";
 import HomeStackScreen from "./src/pages/tabPages/HomeScreen";
 import OpenScreen from "./src/pages/tabPages/OpenScreen";
 import SplashScreen from "./src/pages/tabPages/SplashScreen";
 import RegisterPage from "./src/pages/authPages/RegisterPage";
 const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
+const OpenStack = createStackNavigator();
 
 export default function App() {
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -23,7 +22,6 @@ export default function App() {
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState(null);
     const [isBiometricSupported, setIsBiometricSupported] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -87,8 +85,8 @@ export default function App() {
             {user ? (
                 <MyStack></MyStack>
             ) : (
-                <Stack.Navigator>
-                    <Stack.Screen
+                <OpenStack.Navigator>
+                    <OpenStack.Screen
                         name="SplashScreen"
                         component={SplashScreen}
                         options={{ headerShown: false }}
@@ -98,7 +96,7 @@ export default function App() {
                             },
                         })}
                     />
-                    <Stack.Screen
+                    <OpenStack.Screen
                         name="OpenScreen"
                         component={OpenScreen}
                         options={{ headerShown: false }}
@@ -108,7 +106,7 @@ export default function App() {
                             },
                         })}
                     />
-                    <Stack.Screen
+                    <OpenStack.Screen
                         name="Login"
                         component={LoginScreen}
                         options={{ headerShown: false }}
@@ -118,7 +116,7 @@ export default function App() {
                             },
                         })}
                     />
-                    <Stack.Screen
+                    <OpenStack.Screen
                         name="RegisterPage"
                         component={RegisterPage}
                         options={{ headerShown: false }}
@@ -128,7 +126,7 @@ export default function App() {
                             },
                         })}
                     />
-                    <Stack.Screen
+                    <OpenStack.Screen
                         name="HomeScreen"
                         component={HomeStackScreen}
                         options={{ headerShown: false }}
@@ -138,7 +136,7 @@ export default function App() {
                             },
                         })}
                     />
-                </Stack.Navigator>
+                </OpenStack.Navigator>
             )}
         </NavigationContainer>
     );

@@ -16,15 +16,15 @@ const {width} = Dimensions.get("screen");
 import {firebase} from "../../../firebase";
 import InteractiveTextInput from "react-native-text-input-interactive";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as LocalAuthentication from "expo-local-authentication";
 import * as Animatable from "react-native-animatable";
+import Icon from "react-native-vector-icons/Ionicons";
+import {heightPercentageToDP} from "react-native-responsive-screen";
 
-const LoginScreen = ({navigation}) => {
+const RegisterPage = ({navigation}) => {
     const [username, setUsername] = React.useState("");
+    const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [passwordVisible, setPasswordVisible] = React.useState(false);
-
-    const [rememberMe, setRememberMe] = useState(false);
 
     useEffect(() => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -37,37 +37,45 @@ const LoginScreen = ({navigation}) => {
         };
     }, [navigation]);
 
-    useEffect(() => {
-        const loadStoredUsername = async () => {
-            try {
-                const storedLoginInfo = await AsyncStorage.getItem("lastLoginInfo");
-                if (storedLoginInfo) {
-                    const {
-                        username,
-                        password,
-                        rememberMe: storedRememberMe,
-                    } = JSON.parse(storedLoginInfo);
-                    setUsername(username);
-                    setPassword(password);
-                    setRememberMe(storedRememberMe);
-                }
-            } catch (error) {
-                console.error("Error loading stored login information:", error);
-            }
-        };
-        loadStoredUsername();
-    }, []);
-
     const onIconPress = () => {
         setPasswordVisible((prevVisible) => !prevVisible);
     };
 
-    const handleSignUp = () => {
-        firebase.auth().createUserWithEmailAndPassword(username, password)
-            .then(userCredentials => {
-                const user = userCredentials.user;
-            })
-            .catch(error => alert(error.message))
+    const handleSignUp = async (username, email, password) => {
+        try {
+            await firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then(() => {
+                    firebase.auth().currentUser.sendEmailVerification({
+                        handleCodeInApp: true,
+                        url: 'https://devapp-c9602.firebaseapp.com',
+                    })
+                        .then(() => {
+                            alert('Verification email sent to your email address')
+                        }).catch((error) => {
+                        alert(error.message)
+                    })
+                        .then(() => {
+                            firebase.firestore().collection('users')
+                                .doc(firebase.auth().currentUser.uid)
+                                .set({
+                                    username,
+                                    email,
+                                    password,
+                                })
+                                .then(() => {
+                                    // Navigate to the OpenScreen after successful registration
+                                    navigation.navigate('OpenScreen');
+                                })
+                                .catch((error) => {
+                                    alert(error.message)
+                                })
+                        }).catch((error) => {
+                        alert(error.message)
+                    })
+                }).catch(error => alert(error.message))
+        } catch (error) {
+            alert('Error while creating user: ' + error.message)
+        }
     }
 
     const renderHeader = () => (
@@ -112,6 +120,26 @@ const LoginScreen = ({navigation}) => {
                 }}
             >
                 <InteractiveTextInput
+                    textInputStyle={{width: width * 0.88}}
+                    label="email"
+                    mode="outlined"
+                    placeholder={"Email"}
+                    autoCapitalize="none"
+                    color={COLORS.black}
+                    placeholderTextColor={COLORS.gray}
+                    value={email}
+                    onChangeText={(text) => setEmail(text)}
+                />
+            </View>
+            <View
+                style={{
+                    marginTop: 24,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                }}
+            >
+                <InteractiveTextInput
                     placeholder={"Password"}
                     secureTextEntry={!passwordVisible}
                     enableIcon
@@ -131,6 +159,30 @@ const LoginScreen = ({navigation}) => {
         </Animatable.View>
     );
 
+    const renderGoogleSignUpButton = () => (
+        <Animatable.View animation="fadeInUp" duration={800}>
+            <TouchableOpacity style={{
+                height: 50,
+                width: width * 0.88,
+                backgroundColor: "#2a41cb",
+                marginTop: 20,
+                borderRadius: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                shadowRadius: 8,
+                shadowOpacity: 0.3,
+                shadowColor: "#2a41cb",
+                shadowOffset: {
+                    width: 0,
+                    height: 5,
+                },
+                flexDirection: 'row'
+            }}>
+                <Icon name="logo-google" size={24} color={COLORS.white} style={styles.icon} />
+                <Text style={{marginLeft: 20, fontWeight: "bold", color: COLORS.white}}>Sign up with Google</Text>
+            </TouchableOpacity>
+        </Animatable.View>
+    );
     const renderRegisterButton = () => (
         <Animatable.View animation="fadeInUp" duration={900}>
             <TouchableOpacity
@@ -138,7 +190,7 @@ const LoginScreen = ({navigation}) => {
                     height: 50,
                     width: width * 0.88,
                     backgroundColor: "#2a41cb",
-                    marginTop: width * 0.4,
+                    marginTop: width * 0.25,
                     borderRadius: 12,
                     alignItems: "center",
                     justifyContent: "center",
@@ -150,7 +202,7 @@ const LoginScreen = ({navigation}) => {
                         height: 5,
                     },
                 }}
-                onPress={handleSignUp}
+                onPress={() => handleSignUp(username, email, password)}
             >
                 <Text style={{fontWeight: "bold", color: "#fff"}}>Register</Text>
             </TouchableOpacity>
@@ -196,12 +248,16 @@ const LoginScreen = ({navigation}) => {
                 {renderHeader()}
                 {renderTextInputs()}
                 {renderRegisterButton()}
+                <View style={{alignItems: 'center', justifyContent: 'center', marginTop: heightPercentageToDP(2)}}>
+                    <Text style={{color: '#fff', fontWeight: 'bold'}}>or</Text>
+                </View>
+                {renderGoogleSignUpButton()}
                 {renderGoBackButton()}
             </View>
         </SafeAreaView>
     );
 };
-export default LoginScreen;
+export default RegisterPage;
 
 const styles = StyleSheet.create({
     container: {
@@ -276,6 +332,15 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderColor: COLORS.green,
         borderWidth: 1,
+    },
+    googleButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#DB4437',
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        elevation: 3,
     },
     buttonOpen: {
         backgroundColor: COLORS.green,
