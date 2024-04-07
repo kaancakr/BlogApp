@@ -26,7 +26,8 @@ import {firebase} from "../../../firebase";
 
 const HomeScreen = () => {
     const navigation = useNavigation();
-    const [name, setName] = useState('')
+    const [name, setName] = useState('');
+    const [lastUploadedImageUrl, setLastUploadedImageUrl] = useState(null);
 
     const handleDeletePost = (postId) => {
         // Filter out the post with the given postId
@@ -83,14 +84,15 @@ const HomeScreen = () => {
             })
     }, []);
 
-    const handleNewPost = (input) => {
+    const handleNewPost = (input, uploadedImageUrl) => {
         // Create a new post object
         const newPost = {
             id: posts.length + 1, // Generate a new ID
             username: name.username,
-            imageUrl: "https://via.placeholder.com/250",
+            imageUrl: uploadedImageUrl,
             likes: 0,
             comments: 0,
+            postImage: uploadedImageUrl,
             caption: input,
         };
         // Update the state to include the new post
@@ -142,10 +144,11 @@ const HomeScreen = () => {
                                 key={post.id}
                                 id={post.id}
                                 username={post.username}
-                                imageUrl={post.imageUrl}
+                                imageUrl={post.postImage}
                                 likes={post.likes}
                                 comments={post.comments}
                                 caption={post.caption}
+                                postImage={lastUploadedImageUrl}
                                 onDelete={handleDeletePost}
                             />
                         ))}
@@ -153,7 +156,7 @@ const HomeScreen = () => {
                 </ScrollView>
             </View>
             <View style={styles.slidingButtonContainer}>
-                <SlidingButton onNewPost={handleNewPost} />
+                <SlidingButton onNewPost={handleNewPost}/>
             </View>
         </View>
     );
