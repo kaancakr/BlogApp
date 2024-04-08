@@ -14,7 +14,7 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import COLORS from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
-import { firebase } from '../../../firebase';
+import { firebase } from "../../../firebase";
 
 export default function SettingsScreen() {
   const navigation = useNavigation();

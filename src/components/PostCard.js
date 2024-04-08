@@ -206,9 +206,7 @@ const PostCard = ({
   ];
 
   return (
-    <Animated.View
-      style={styles.container}
-    >
+    <Animated.View style={styles.container}>
       <View style={styles.leftContainer}>
         <View style={styles.header}>
           <Text style={styles.username}>{username}</Text>
