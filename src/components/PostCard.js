@@ -207,8 +207,7 @@ const PostCard = ({
 
   return (
     <Animated.View
-      {...panResponder.panHandlers}
-      style={[styles.container, { transform: [{ translateX }] }]}
+      style={styles.container}
     >
       <View style={styles.leftContainer}>
         <View style={styles.header}>

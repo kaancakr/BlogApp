@@ -71,6 +71,7 @@ const SlidingButton = ({ onNewPost }) => {
       onNewPost(inputText, lastUploadedImageUrl);
       setInputText(""); // Clear the input field
       setModalVisible(false); // Close the modal
+      setLastUploadedImageUrl(null);
     }
   };
 
@@ -338,7 +339,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     paddingBottom: hp(20),
-    marginBottom: hp(30)
   },
   modalContent: {
     backgroundColor: COLORS.background,

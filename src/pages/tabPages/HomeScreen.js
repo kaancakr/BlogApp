@@ -30,9 +30,7 @@ const HomeScreen = () => {
     const [lastUploadedImageUrl, setLastUploadedImageUrl] = useState(null);
 
     const handleDeletePost = (postId) => {
-        // Filter out the post with the given postId
         const updatedPosts = posts.filter(post => post.id !== postId);
-        // Update the state to remove the deleted post
         setPosts(updatedPosts);
     };
 
@@ -85,9 +83,8 @@ const HomeScreen = () => {
     }, []);
 
     const handleNewPost = (input, uploadedImageUrl) => {
-        // Create a new post object
         const newPost = {
-            id: posts.length + 1, // Generate a new ID
+            id: posts.length + 1,
             username: name.username,
             imageUrl: uploadedImageUrl,
             likes: 0,
@@ -95,7 +92,6 @@ const HomeScreen = () => {
             postImage: uploadedImageUrl,
             caption: input,
         };
-        // Update the state to include the new post
         setPosts([...posts, newPost]);
     };
 
