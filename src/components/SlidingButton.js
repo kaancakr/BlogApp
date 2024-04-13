@@ -16,6 +16,7 @@ import COLORS from "../constants/colors";
 import { Uploading } from "../components/Uploading";
 import * as ImagePicker from "expo-image-picker";
 import * as Animatable from "react-native-animatable";
+import RNPickerSelect from "react-native-picker-select";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -239,64 +240,80 @@ const SlidingButton = ({ onNewPost }) => {
                 autoFocus
                 value={inputText}
                 onChangeText={setInputText}
-                multiline={true}
+                returnKeyType="done"
               />
             </View>
-            {lastUploadedImageUrl && (
-              <Animatable.View
-                animation={"fadeInUp"}
-                style={styles.headingContainer}
-              >
-                <Image
-                  source={{ uri: lastUploadedImageUrl }}
+            <ScrollView>
+              {lastUploadedImageUrl && (
+                <Animatable.View
+                  animation={"fadeInUp"}
+                  style={styles.headingContainer}
+                >
+                  <Image
+                    source={{ uri: lastUploadedImageUrl }}
+                    style={{
+                      width: "100%",
+                      height: "90%",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      resizeMode: "cover",
+                    }}
+                  />
+                </Animatable.View>
+              )}
+              {image && <Uploading image={image} progress={progress} />}
+              {!lastUploadedImageUrl && (
+                <View
                   style={{
-                    width: "100%",
-                    height: "90%",
+                    flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    resizeMode: "cover",
+                    marginTop: 30,
                   }}
+                >
+                  <Animatable.View animation={"fadeInUp"}>
+                    <TouchableOpacity
+                      onPress={pickImage}
+                      style={styles.uploadButton}
+                    >
+                      <View style={styles.buttonContainer}>
+                        <Text
+                          style={{
+                            color: "white",
+                            fontSize: 16,
+                            fontWeight: "bold",
+                            marginRight: 20,
+                          }}
+                        >
+                          Upload your photo
+                        </Text>
+                        <Ionicons name="image" size={25} color={"white"} />
+                      </View>
+                    </TouchableOpacity>
+                  </Animatable.View>
+                </View>
+              )}
+              <View style={styles.pickerContainer}>
+                <RNPickerSelect
+                  onValueChange={(value) => console.log(value)}
+                  items={[
+                    { label: "JavaScript", value: "JavaScript" },
+                    { label: "TypeScript", value: "TypeScript" },
+                    { label: "Python", value: "Python" },
+                    { label: "Java", value: "Java" },
+                    { label: "C++", value: "C++" },
+                    { label: "C", value: "C" },
+                  ]}
+                  style={styles.picker}
                 />
-              </Animatable.View>
-            )}
-            {image && <Uploading image={image} progress={progress} />}
-            {!lastUploadedImageUrl && (
-              <View
-                style={{
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 30,
-                }}
-              >
-                <Animatable.View animation={"fadeInUp"}>
-                  <TouchableOpacity
-                    onPress={pickImage}
-                    style={styles.uploadButton}
-                  >
-                    <View style={styles.buttonContainer}>
-                      <Text
-                        style={{
-                          color: "white",
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          marginRight: 20,
-                        }}
-                      >
-                        Upload your photo
-                      </Text>
-                      <Ionicons name="image" size={25} color={"white"} />
-                    </View>
-                  </TouchableOpacity>
-                </Animatable.View>
               </View>
-            )}
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={handleSubmit}
-            >
-              <Text style={styles.submitButtonText}>Submit</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleSubmit}
+              >
+                <Text style={styles.submitButtonText}>Submit</Text>
+              </TouchableOpacity>
+            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -383,6 +400,49 @@ const styles = StyleSheet.create({
     color: "#6f6",
     fontSize: 16,
     marginRight: 5,
+  },
+  pickerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  // Inside your styles object
+  picker: {
+    inputIOS: {
+      color: "white",
+      paddingTop: 13,
+      paddingHorizontal: 10,
+      paddingBottom: 12,
+      fontSize: 16,
+      fontFamily: "Courier New",
+      borderWidth: 1,
+      borderColor: "gray",
+      borderRadius: 4,
+      backgroundColor: COLORS.background,
+      paddingRight: 30,
+      width: wp(70),
+      marginBottom: 25,
+    },
+    inputAndroid: {
+      color: "white",
+      paddingTop: 13,
+      paddingHorizontal: 10,
+      paddingBottom: 12,
+      fontSize: 16,
+      fontFamily: "Courier New",
+      borderWidth: 1,
+      borderColor: "gray",
+      borderRadius: 4,
+      backgroundColor: "black",
+      paddingRight: 30, // to ensure the text is never behind the icon
+      width: wp(70), // Set the width of the picker
+    },
+    placeholder: {
+      color: "white",
+    },
+    iconContainer: {
+      top: 13,
+      right: 12,
+    },
   },
   submitButton: {
     padding: 10,

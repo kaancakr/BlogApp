@@ -8,6 +8,10 @@ import {
   TouchableOpacity,
   Switch,
   Image,
+  Modal,
+  TextInput,
+  Button,
+  Alert
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -23,6 +27,8 @@ import { firebase } from "../../../firebase";
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const [name, setName] = useState("");
+  const [newUsername, setNewUsername] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const [form, setForm] = useState({
     darkMode: false,
@@ -49,13 +55,27 @@ const ProfileScreen = () => {
     navigation.navigate("Settings");
   };
 
+  const handleSaveUsername = async () => {
+    try {
+      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).update({
+        username: newUsername 
+      });
+      setName(newUsername);
+      setModalVisible(false);
+      Alert.alert('Success', 'Username updated successfully');
+    } catch (error) {
+      console.error('Error updating username:', error);
+      Alert.alert('Error', 'Failed to update username');
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#222831" }}>
       <View style={styles.container}>
         <View style={styles.profile}>
           <TouchableOpacity
             onPress={() => {
-              // handle onPress
+              setModalVisible(true);
             }}
           >
             <View style={styles.profileAvatarWrapper}>
@@ -85,6 +105,28 @@ const ProfileScreen = () => {
             </Text>
           </View>
         </View>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TextInput
+                placeholder="Enter new username"
+                value={newUsername}
+                onChangeText={setNewUsername}
+                style={styles.input}
+                autoCapitalize="none"
+              />
+              <Button title="Save" onPress={handleSaveUsername} />
+            </View>
+          </View>
+        </Modal>
 
         <ScrollView>
           <View style={styles.section}>
@@ -381,5 +423,32 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 0,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 20,
   },
 });

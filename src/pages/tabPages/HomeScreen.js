@@ -129,13 +129,15 @@ const HomeScreen = () => {
             />
           </TouchableOpacity>
         </View>
-        <FlatList
-          data={verticalData}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          horizontal
-          contentContainerStyle={styles.flatListContainer}
-        />
+        <View style={{ height: hp(10) }}>
+          <FlatList
+            data={verticalData}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            contentContainerStyle={styles.flatListContainer}
+          />
+        </View>
         <ScrollView>
           <View style={styles.postContainer}>
             {posts.map((post) => (

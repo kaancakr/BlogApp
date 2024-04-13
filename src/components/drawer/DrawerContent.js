@@ -117,7 +117,7 @@ export function DrawerContent() {
                     paddingBottom: 20,
                 }}
             >
-                Copyright CKR Design © 2023
+                Copyright CKR Design © 2024
             </Text>
             <Modal
                 animationType="slide"
